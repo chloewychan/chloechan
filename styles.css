@@ -1,0 +1,180 @@
+/* ============================================================
+   DESIGN TOKENS — edit these to restyle the entire site
+   ============================================================ */
+:root {
+  /* Colours */
+  --color-bg:       #fafaf8;      /* page background */
+  --color-surface:  #f3f2ef;      /* card / input backgrounds */
+  --color-border:   #e8e6e1;      /* dividers & borders */
+  --color-text:     #1a1916;      /* primary text */
+  --color-muted:    #7a7772;      /* secondary / label text */
+  --color-brand:    #b07d5a;      /* accent / interactive colour */
+  --color-brand-hover: #8f6344;   /* brand on hover */
+
+  /* Typography */
+  --font-sans:   'Inter', system-ui, sans-serif;
+  --font-serif:  'Playfair Display', Georgia, serif;
+  --font-size-base: 1rem;         /* 16px */
+  --line-height:    1.6;
+
+  /* Spacing & shape */
+  --radius-card:   0.75rem;       /* card border radius */
+  --radius-tag:    9999px;        /* pill tags */
+  --nav-height:    3.5rem;        /* keep in sync with h-14 in HTML */
+
+  /* Transitions */
+  --transition: 150ms ease;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--color-muted);
+  border-radius: 0.375rem;
+  transition: color var(--transition), background-color var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link:hover,
+.group:hover .nav-link {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 160px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 0.375rem;
+  box-shadow: 0 8px 24px -4px rgba(0,0,0,0.08), 0 2px 8px -2px rgba(0,0,0,0.04);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+  transform: translateX(-50%) translateY(-4px);
+  z-index: 100;
+}
+
+.group:hover .dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  border-radius: 0.3rem;
+  text-decoration: none;
+  transition: color var(--transition), background-color var(--transition);
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+/* ============================================================
+   SECTION LABELS
+   ============================================================ */
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1.5rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  border-color: var(--color-brand);
+  box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06);
+}
+
+.card-tag {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+  background-color: color-mix(in srgb, var(--color-brand) 10%, transparent);
+  border-radius: var(--radius-tag);
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.card-body {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.card-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+/* ============================================================
+   LINKS
+   ============================================================ */
+.link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-brand);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.link:hover {
+  color: var(--color-brand-hover);
+}
