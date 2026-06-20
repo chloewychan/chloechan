@@ -1,0 +1,14 @@
+{
+  "name": "chloechan.ca",
+  "version": "1.0.0",
+  "description": "Personal portfolio website",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && http-server -p 8000 -o",
+    "dev": "npm run build && http-server -p 8000 -c-1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "typescript": "^5.3.3"
+  }
+}

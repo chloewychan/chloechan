@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# TypeScript
+*.js.map
+*.d.ts
+
+# IDE
+.vscode/
+.DS_Store
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
