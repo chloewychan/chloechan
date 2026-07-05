@@ -106,6 +106,106 @@ body {
 }
 
 /* ============================================================
+   HERO SECTION
+   ============================================================ */
+.hero-section {
+  min-height: 100vh;
+  position: relative;
+  margin-top: var(--nav-height);
+}
+
+.parallax-bg {
+  transform: translateY(var(--parallax-offset, 0px));
+}
+
+/* ============================================================
+   FULL PAGE SECTIONS
+   ============================================================ */
+.full-page-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+/* ============================================================
+   CAROUSEL
+   ============================================================ */
+.carousel {
+  position: relative;
+}
+
+.carousel-inner {
+  background-size: cover;
+  background-position: center;
+  min-height: 300px;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.carousel-prev,
+.carousel-next {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: color var(--transition);
+}
+
+.carousel-prev:hover,
+.carousel-next:hover {
+  color: var(--color-brand) !important;
+}
+
+.carousel-indicator {
+  font-size: 0.75rem;
+}
+
+/* ============================================================
+   REVEAL BOX
+   ============================================================ */
+.reveal-box {
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.reveal-box:hover {
+  box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06);
+}
+
+.reveal-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reveal-content {
+  animation: slideDown 300ms ease;
+}
+
+.reveal-content.hidden {
+  display: none;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
    SECTION LABELS
    ============================================================ */
 .section-label {

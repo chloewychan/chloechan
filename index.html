@@ -30,7 +30,7 @@
 
   <!-- ─── NAV ─────────────────────────────────────────────────────────────── -->
   <header id="top" class="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
-    <nav class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+    <nav class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
 
       <!-- Logo / name -->
       <a href="#top" class="font-serif text-lg tracking-tight text-[var(--color-text)] hover:text-[var(--color-brand)] transition-colors">
@@ -47,11 +47,10 @@
             <svg class="ml-1 w-3 h-3 inline-block opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
           </a>
           <div class="dropdown">
-            <!-- Edit these items to match your actual projects -->
             <a href="#project-reverielle" class="dropdown-item">Reverielle</a>
-            <a href="#project-ghetti" class="dropdown-item">Ghetti</a>
-            <a href="#project-playlist-merger" class="dropdown-item">Playlist Merger</a>
-            <a href="#project-chlotus" class="dropdown-item">Chlotus</a>
+            <a href="#project-compositwin" class="dropdown-item">Compositwin</a>
+            <a href="#project-video-game" class="dropdown-item">Video Game</a>
+            <a href="#project-emojify" class="dropdown-item">Emojify</a>
           </div>
         </li>
 
@@ -62,9 +61,9 @@
             <svg class="ml-1 w-3 h-3 inline-block opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
           </a>
           <div class="dropdown">
-            <!-- Edit these items to match your actual companies / experience -->
-            <a href="#company-1" class="dropdown-item">Company One</a>
-            <a href="#company-2" class="dropdown-item">Company Two</a>
+            <a href="#company-chloefriendly" class="dropdown-item">ChloeFriendly</a>
+            <a href="#company-calla" class="dropdown-item">Calla Curve</a>
+            <a href="#company-sewciety" class="dropdown-item">Sewciety</a>
           </div>
         </li>
 
@@ -75,10 +74,11 @@
             <svg class="ml-1 w-3 h-3 inline-block opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
           </a>
           <div class="dropdown">
-            <!-- Edit these items to match your portfolio pieces -->
-            <a href="#portfolio-design" class="dropdown-item">Design</a>
-            <a href="#portfolio-dev" class="dropdown-item">Development</a>
-            <a href="#portfolio-writing" class="dropdown-item">Writing</a>
+            <a href="#portfolio-acrobatics" class="dropdown-item">Acrobatics & Contortion</a>
+            <a href="#portfolio-visual-arts" class="dropdown-item">Visual Arts</a>
+            <a href="#portfolio-beauty-fashion" class="dropdown-item">Beauty & Fashion</a>
+            <a href="#portfolio-interior-design" class="dropdown-item">Interior Design</a>
+            <a href="#portfolio-music" class="dropdown-item">Music</a>
           </div>
         </li>
 
@@ -86,170 +86,357 @@
     </nav>
   </header>
 
-  <main class="max-w-5xl mx-auto px-6 pt-32">
+  <main>
 
-    <!-- ─── HERO ───────────────────────────────────────────────────────────── -->
-    <section class="py-24 border-b border-[var(--color-border)]">
-      <p class="text-sm tracking-widest uppercase text-[var(--color-muted)] mb-4">
-        <!-- e.g. "Designer · Developer · Builder" -->
-        Designer · Developer · Builder
-      </p>
-      <h1 class="font-serif text-5xl md:text-6xl leading-tight mb-6">
-        Hi, I'm Chloe.
-      </h1>
-      <p class="text-lg text-[var(--color-muted)] max-w-xl leading-relaxed">
-        <!-- Edit this bio -->
-        I build things at the intersection of design and technology. Based in Canada.
-      </p>
-    </section>
+    <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+    <section id="top" class="hero-section relative w-full h-screen overflow-hidden flex items-center justify-center">
+      <!-- Background image -->
+      <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><rect fill=%22%23f0e4d7%22 width=%221200%22 height=%22800%22/></svg>')"></div>
+      
+      <!-- Parallax image (scrolls slower) -->
+      <div class="parallax-bg absolute inset-0 opacity-40" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><circle cx=%22600%22 cy=%22400%22 r=%22300%22 fill=%22%23b07d5a%22 opacity=%220.1%22/></svg>'); background-size: cover; background-position: center;"></div>
 
-    <!-- ─── PROJECTS ──────────────────────────────────────────────────────── -->
-    <section id="projects" class="py-20 border-b border-[var(--color-border)] scroll-mt-20">
-      <h2 class="section-label">Projects</h2>
-
-      <div class="grid md:grid-cols-2 gap-8 mt-10">
-
-        <!-- Project card — duplicate and edit for each project -->
-        <div id="project-reverielle" class="card scroll-mt-20">
-          <span class="card-tag">Web App</span>
-          <h3 class="card-title">Reverielle</h3>
-          <p class="card-body">
-            <!-- Edit project description -->
-            A short description of what Reverielle is and what problem it solves.
-          </p>
-          <div class="card-links">
-            <a href="#" class="link">GitHub →</a>
-            <a href="#" class="link">Live →</a>
-          </div>
-        </div>
-
-        <div id="project-ghetti" class="card scroll-mt-20">
-          <span class="card-tag">Tool</span>
-          <h3 class="card-title">Ghetti</h3>
-          <p class="card-body">
-            A short description of what Ghetti is and what problem it solves.
-          </p>
-          <div class="card-links">
-            <a href="#" class="link">GitHub →</a>
-            <a href="#" class="link">Live →</a>
-          </div>
-        </div>
-
-        <div id="project-playlist-merger" class="card scroll-mt-20">
-          <span class="card-tag">Utility</span>
-          <h3 class="card-title">Playlist Merger</h3>
-          <p class="card-body">
-            Merges playlists across streaming platforms with a clean, simple interface.
-          </p>
-          <div class="card-links">
-            <a href="#" class="link">GitHub →</a>
-          </div>
-        </div>
-
-        <div id="project-chlotus" class="card scroll-mt-20">
-          <span class="card-tag">App</span>
-          <h3 class="card-title">Chlotus</h3>
-          <p class="card-body">
-            A short description of what Chlotus is and what problem it solves.
-          </p>
-          <div class="card-links">
-            <a href="#" class="link">GitHub →</a>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ─── COMPANIES ─────────────────────────────────────────────────────── -->
-    <section id="companies" class="py-20 border-b border-[var(--color-border)] scroll-mt-20">
-      <h2 class="section-label">Companies</h2>
-
-      <div class="mt-10 flex flex-col gap-8">
-
-        <!-- Company entry — duplicate and edit for each -->
-        <div id="company-1" class="flex gap-6 items-start scroll-mt-20">
-          <div class="w-10 h-10 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] flex-shrink-0 flex items-center justify-center text-xs text-[var(--color-muted)] font-medium">
-            <!-- Company logo initial or replace with <img> -->
-            Co
-          </div>
-          <div>
-            <div class="flex items-baseline gap-3">
-              <h3 class="font-medium text-[var(--color-text)]">Company One</h3>
-              <span class="text-sm text-[var(--color-muted)]">Role · 2023 – present</span>
-            </div>
-            <p class="mt-1 text-[var(--color-muted)] leading-relaxed">
-              What you do / did there. Keep it short and punchy.
-            </p>
-          </div>
-        </div>
-
-        <div id="company-2" class="flex gap-6 items-start scroll-mt-20">
-          <div class="w-10 h-10 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] flex-shrink-0 flex items-center justify-center text-xs text-[var(--color-muted)] font-medium">
-            Co
-          </div>
-          <div>
-            <div class="flex items-baseline gap-3">
-              <h3 class="font-medium text-[var(--color-text)]">Company Two</h3>
-              <span class="text-sm text-[var(--color-muted)]">Role · 2021 – 2023</span>
-            </div>
-            <p class="mt-1 text-[var(--color-muted)] leading-relaxed">
-              What you do / did there. Keep it short and punchy.
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ─── PORTFOLIO ─────────────────────────────────────────────────────── -->
-    <section id="portfolio" class="py-20 scroll-mt-20">
-      <h2 class="section-label">Portfolio</h2>
-
-      <!-- Design -->
-      <div id="portfolio-design" class="mt-10 scroll-mt-20">
-        <h3 class="text-xs tracking-widest uppercase text-[var(--color-muted)] mb-5">Design</h3>
-        <div class="grid md:grid-cols-3 gap-4">
-          <!-- Portfolio item — duplicate as needed -->
-          <div class="aspect-[4/3] rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-sm text-[var(--color-muted)]">
-            Image / Preview
-          </div>
-          <div class="aspect-[4/3] rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-sm text-[var(--color-muted)]">
-            Image / Preview
-          </div>
-          <div class="aspect-[4/3] rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-sm text-[var(--color-muted)]">
-            Image / Preview
-          </div>
-        </div>
-      </div>
-
-      <!-- Development -->
-      <div id="portfolio-dev" class="mt-14 scroll-mt-20">
-        <h3 class="text-xs tracking-widest uppercase text-[var(--color-muted)] mb-5">Development</h3>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div class="aspect-[4/3] rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-sm text-[var(--color-muted)]">
-            Image / Preview
-          </div>
-          <div class="aspect-[4/3] rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center text-sm text-[var(--color-muted)]">
-            Image / Preview
-          </div>
-        </div>
-      </div>
-
-      <!-- Writing -->
-      <div id="portfolio-writing" class="mt-14 scroll-mt-20">
-        <h3 class="text-xs tracking-widest uppercase text-[var(--color-muted)] mb-5">Writing</h3>
-        <div class="flex flex-col gap-3">
-          <!-- Writing item — duplicate as needed -->
-          <a href="#" class="group flex items-baseline justify-between py-3 border-b border-[var(--color-border)] hover:border-[var(--color-brand)] transition-colors">
-            <span class="font-medium group-hover:text-[var(--color-brand)] transition-colors">Article or post title</span>
-            <span class="text-sm text-[var(--color-muted)] ml-4 flex-shrink-0">Jun 2025</span>
-          </a>
-          <a href="#" class="group flex items-baseline justify-between py-3 border-b border-[var(--color-border)] hover:border-[var(--color-brand)] transition-colors">
-            <span class="font-medium group-hover:text-[var(--color-brand)] transition-colors">Another article or post</span>
-            <span class="text-sm text-[var(--color-muted)] ml-4 flex-shrink-0">Mar 2025</span>
+      <!-- Content -->
+      <div class="hero-content relative z-10 text-center px-6">
+        <p class="text-sm tracking-widest uppercase text-[var(--color-muted)] mb-4">
+          Designer · Developer · Builder
+        </p>
+        <h1 class="font-serif text-6xl md:text-8xl leading-tight mb-6">
+          Hi, I'm Chloe.
+        </h1>
+        <p class="text-lg text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
+          I build things at the intersection of design and technology. Based in Canada.
+        </p>
+        <div class="mt-12">
+          <a href="#projects" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-brand)] text-white rounded-lg hover:bg-[var(--color-brand-hover)] transition-colors">
+            Explore My Work
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- ─── PROJECTS ─────────────────────────────────────────────────────── -->
+    <section id="projects" class="scroll-mt-20">
+
+      <!-- Reverielle -->
+      <section id="project-reverielle" class="full-page-section flex items-center">
+        <div class="max-w-7xl mx-auto w-full px-6 grid md:grid-cols-2 gap-12 items-center">
+          <!-- Content -->
+          <div>
+            <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
+            <h2 class="font-serif text-4xl md:text-5xl mb-6">Reverielle</h2>
+            <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+              A beautiful application that brings imagination to life. Reverielle is designed for creators who want to express themselves through intuitive design.
+            </p>
+            
+            <!-- Carousel -->
+            <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
+              <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
+                <span class="text-[var(--color-muted)]">iPhone Portrait Placeholder</span>
+              </div>
+              <div class="carousel-controls flex justify-between items-center p-4 bg-[var(--color-surface)]">
+                <button class="carousel-prev text-[var(--color-muted)] hover:text-[var(--color-brand)]">← Previous</button>
+                <span class="carousel-indicator text-sm text-[var(--color-muted)]">1 / 3</span>
+                <button class="carousel-next text-[var(--color-muted)] hover:text-[var(--color-brand)]">Next →</button>
+              </div>
+            </div>
+
+            <!-- Reveal Box -->
+            <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
+              <div class="reveal-trigger font-medium text-[var(--color-text)]">
+                ✦ Click to reveal project details
+              </div>
+              <div class="reveal-content hidden mt-4 text-[var(--color-muted)] space-y-2">
+                <p><strong>Role:</strong> Product Designer & Developer</p>
+                <p><strong>Timeline:</strong> 6 months</p>
+                <p><strong>Technologies:</strong> React, TypeScript, Tailwind CSS</p>
+                <p class="mt-4">A comprehensive design and development project focused on creating an intuitive user experience for creative professionals.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Placeholder image -->
+          <div class="hidden md:flex items-center justify-center">
+            <div class="w-full aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">
+              iPhone Portrait Image
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compositwin -->
+      <section id="project-compositwin" class="full-page-section flex items-center">
+        <div class="max-w-7xl mx-auto w-full px-6 grid md:grid-cols-2 gap-12 items-center">
+          <div class="hidden md:flex items-center justify-center">
+            <div class="w-full aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">
+              iPhone Portrait Image
+            </div>
+          </div>
+          
+          <div>
+            <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
+            <h2 class="font-serif text-4xl md:text-5xl mb-6">Compositwin</h2>
+            <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+              Compositwin is a mobile-first platform that simplifies complex workflows. Built with modern design principles and responsive functionality.
+            </p>
+            
+            <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
+              <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
+                <span class="text-[var(--color-muted)]">iPhone Portrait Placeholder</span>
+              </div>
+              <div class="carousel-controls flex justify-between items-center p-4 bg-[var(--color-surface)]">
+                <button class="carousel-prev text-[var(--color-muted)] hover:text-[var(--color-brand)]">← Previous</button>
+                <span class="carousel-indicator text-sm text-[var(--color-muted)]">1 / 3</span>
+                <button class="carousel-next text-[var(--color-muted)] hover:text-[var(--color-brand)]">Next →</button>
+              </div>
+            </div>
+
+            <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
+              <div class="reveal-trigger font-medium text-[var(--color-text)]">
+                ✦ Click to reveal project details
+              </div>
+              <div class="reveal-content hidden mt-4 text-[var(--color-muted)] space-y-2">
+                <p><strong>Role:</strong> UI/UX Designer</p>
+                <p><strong>Timeline:</strong> 4 months</p>
+                <p><strong>Technologies:</strong> Figma, Prototyping, User Research</p>
+                <p class="mt-4">A mobile application that streamlines creative workflows through intuitive interface design and user-centered development.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Video Game -->
+      <section id="project-video-game" class="full-page-section flex items-center">
+        <div class="max-w-7xl mx-auto w-full px-6">
+          <div class="mb-8">
+            <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
+            <h2 class="font-serif text-4xl md:text-5xl mb-6">Video Game</h2>
+            <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed max-w-2xl">
+              An immersive gaming experience designed with cutting-edge graphics and engaging gameplay mechanics.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
+                <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
+                  <span class="text-[var(--color-muted)]">Landscape Desktop Placeholder</span>
+                </div>
+                <div class="carousel-controls flex justify-between items-center p-4 bg-[var(--color-surface)]">
+                  <button class="carousel-prev text-[var(--color-muted)] hover:text-[var(--color-brand)]">← Previous</button>
+                  <span class="carousel-indicator text-sm text-[var(--color-muted)]">1 / 5</span>
+                  <button class="carousel-next text-[var(--color-muted)] hover:text-[var(--color-brand)]">Next →</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
+                <div class="reveal-trigger font-medium text-[var(--color-text)]">
+                  ✦ Click to reveal project details
+                </div>
+                <div class="reveal-content hidden mt-4 text-[var(--color-muted)] space-y-2">
+                  <p><strong>Role:</strong> Game Developer & Designer</p>
+                  <p><strong>Timeline:</strong> 10 months</p>
+                  <p><strong>Technologies:</strong> Unity, C#, 3D Design</p>
+                  <p class="mt-4">A full-featured game with immersive storytelling, sophisticated game mechanics, and stunning visuals.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Emojify -->
+      <section id="project-emojify" class="full-page-section flex items-center">
+        <div class="max-w-7xl mx-auto w-full px-6">
+          <div class="mb-8">
+            <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
+            <h2 class="font-serif text-4xl md:text-5xl mb-6">Emojify</h2>
+            <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed max-w-2xl">
+              Transform text into expressive emoji art. Emojify brings creativity and fun to digital communication.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
+                <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
+                  <span class="text-[var(--color-muted)]">Landscape Desktop Placeholder</span>
+                </div>
+                <div class="carousel-controls flex justify-between items-center p-4 bg-[var(--color-surface)]">
+                  <button class="carousel-prev text-[var(--color-muted)] hover:text-[var(--color-brand)]">← Previous</button>
+                  <span class="carousel-indicator text-sm text-[var(--color-muted)]">1 / 4</span>
+                  <button class="carousel-next text-[var(--color-muted)] hover:text-[var(--color-brand)]">Next →</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
+                <div class="reveal-trigger font-medium text-[var(--color-text)]">
+                  ✦ Click to reveal project details
+                </div>
+                <div class="reveal-content hidden mt-4 text-[var(--color-muted)] space-y-2">
+                  <p><strong>Role:</strong> Full Stack Developer</p>
+                  <p><strong>Timeline:</strong> 3 months</p>
+                  <p><strong>Technologies:</strong> Node.js, React, API Integration</p>
+                  <p class="mt-4">A fun web application that uses AI to convert text into creative emoji representations.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- ─── COMPANIES ────────────────────────────────────────────────────── -->
+    <section id="companies" class="scroll-mt-20">
+
+      <!-- ChloeFriendly -->
+      <section id="company-chloefriendly" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Company</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">ChloeFriendly</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            A company dedicated to creating inclusive and friendly digital experiences for everyone.
+          </p>
+          <div class="space-y-4 text-left max-w-xl mx-auto">
+            <p><strong>Position:</strong> Founder & Creative Director</p>
+            <p><strong>Timeline:</strong> 2023 – Present</p>
+            <p class="text-[var(--color-muted)]">Leading the vision of creating welcoming digital spaces and fostering communities through thoughtful design and technology.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Calla Curve -->
+      <section id="company-calla" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Company</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Calla Curve</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            An innovative beauty and wellness brand celebrating diversity and self-expression.
+          </p>
+          <div class="space-y-4 text-left max-w-xl mx-auto">
+            <p><strong>Position:</strong> Brand Designer & Product Lead</p>
+            <p><strong>Timeline:</strong> 2021 – 2023</p>
+            <p class="text-[var(--color-muted)]">Developed brand identity, designed product packaging, and led the creative direction for marketing campaigns and digital experiences.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sewciety -->
+      <section id="company-sewciety" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Company</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Sewciety</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            A community-driven platform connecting makers, designers, and fashion enthusiasts worldwide.
+          </p>
+          <div class="space-y-4 text-left max-w-xl mx-auto">
+            <p><strong>Position:</strong> Community Manager & Designer</p>
+            <p><strong>Timeline:</strong> 2020 – 2021</p>
+            <p class="text-[var(--color-muted)]">Built and nurtured a thriving community of creators, managed social media presence, and designed engaging content for a global audience.</p>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+    <!-- ─── PORTFOLIO ────────────────────────────────────────────────────── -->
+    <section id="portfolio" class="scroll-mt-20">
+
+      <!-- Acrobatics & Contortion -->
+      <section id="portfolio-acrobatics" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Acrobatics & Contortion</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            Explore the art of movement and flexibility through carefully curated acrobatic and contortion photography.
+          </p>
+          <div class="grid md:grid-cols-3 gap-4 mt-12">
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Visual Arts -->
+      <section id="portfolio-visual-arts" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Visual Arts</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            A collection of digital and traditional artwork exploring color, form, and emotion.
+          </p>
+          <div class="grid md:grid-cols-3 gap-4 mt-12">
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Beauty & Fashion -->
+      <section id="portfolio-beauty-fashion" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Beauty & Fashion</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            High-fashion and beauty photography showcasing creativity, style, and confidence.
+          </p>
+          <div class="grid md:grid-cols-3 gap-4 mt-12">
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interior Design -->
+      <section id="portfolio-interior-design" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Interior Design</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            Thoughtfully designed interior spaces that blend functionality with aesthetic beauty.
+          </p>
+          <div class="grid md:grid-cols-3 gap-4 mt-12">
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+            <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">Portfolio Image</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Music -->
+      <section id="portfolio-music" class="full-page-section flex items-center">
+        <div class="max-w-3xl mx-auto w-full px-6 text-center">
+          <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+          <h2 class="font-serif text-5xl md:text-6xl mb-6">Music</h2>
+          <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
+            Original compositions and music production showcasing diverse genres and creative expression.
+          </p>
+          <div class="mt-12 space-y-4 max-w-md mx-auto">
+            <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-4 text-left">
+              <p class="font-medium">Track Title</p>
+              <p class="text-sm text-[var(--color-muted)]">Genre • 3:45</p>
+            </div>
+            <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-4 text-left">
+              <p class="font-medium">Another Track</p>
+              <p class="text-sm text-[var(--color-muted)]">Genre • 4:12</p>
+            </div>
+            <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-4 text-left">
+              <p class="font-medium">More Music</p>
+              <p class="text-sm text-[var(--color-muted)]">Genre • 5:00</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
     </section>
 
@@ -257,12 +444,11 @@
 
   <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
   <footer class="border-t border-[var(--color-border)] mt-20">
-    <div class="max-w-5xl mx-auto px-6 py-8 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-6 py-12 flex items-center justify-between flex-wrap gap-6">
       <span class="text-sm text-[var(--color-muted)]">© 2026 Chloe Chan</span>
       <div class="flex gap-5">
-        <!-- Edit href values to your actual profiles -->
-        <a href="https://github.com/chloechan" target="_blank" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-brand)] transition-colors">GitHub</a>
-        <a href="https://linkedin.com/in/chloechan" target="_blank" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-brand)] transition-colors">LinkedIn</a>
+        <a href="https://github.com/chloewychan" target="_blank" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-brand)] transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/chloe-chan-339819290/" target="_blank" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-brand)] transition-colors">LinkedIn</a>
         <a href="mailto:dev.chloe.c@gmail.com" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-brand)] transition-colors">Email</a>
       </div>
     </div>
