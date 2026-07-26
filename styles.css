@@ -6,14 +6,33 @@
   --color-bg:       #fafaf8;      /* page background */
   --color-surface:  #f3f2ef;      /* card / input backgrounds */
   --color-border:   #e8e6e1;      /* dividers & borders */
-  --color-text:     #1a1916;      /* primary text */
+  --color-text:     #796C6C;      /* primary text */
   --color-muted:    #7a7772;      /* secondary / label text */
   --color-brand:    #b07d5a;      /* accent / interactive colour */
   --color-brand-hover: #8f6344;   /* brand on hover */
 
+  /* Palette — reserved for future use, not yet applied anywhere */
+  --palette-01: #E7F4D8;
+  --palette-02: #CFE4BA;
+  --palette-03: #E6EEF7;
+  --palette-04: #AFBEDD;
+  --palette-05: #E6E1FA;
+  --palette-06: #D2C9FA;
+  --palette-07: #F6D8EF;
+  --palette-08: #EFC0E1;
+  --palette-09: #F7E9DC;
+  --palette-10: #F6CBC0;
+  --palette-11: #FDF8CE;
+  --palette-12: #F8EBAF;
+  --palette-13: #FDFBFA;
+  --palette-14: #E5DBD2;
+  --palette-15: #A99D9D;
+  --palette-16: #796C6C;
+
   /* Typography */
   --font-sans:   'Inter', system-ui, sans-serif;
   --font-serif:  'Playfair Display', Georgia, serif;
+  --font-hero:   'Baloo 2', var(--font-sans);   /* hero + header, matches hero art */
   --font-size-base: 1rem;         /* 16px */
   --line-height:    1.6;
 
@@ -43,12 +62,18 @@ body {
 /* ============================================================
    NAV
    ============================================================ */
+.header-logo {
+  font-family: var(--font-hero);
+  font-weight: 700;
+}
+
 .nav-link {
   display: inline-flex;
   align-items: center;
   padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 400;
+  font-family: var(--font-hero);
+  font-size: 0.9375rem;
+  font-weight: 600;
   color: var(--color-muted);
   border-radius: 0.375rem;
   transition: color var(--transition), background-color var(--transition);
@@ -107,15 +132,263 @@ body {
 
 /* ============================================================
    HERO SECTION
+   ============================================================
+   The hero is one big illustration (images/hero/) treated as a
+   4096×1714 coordinate space. Every sprite is placed with left/top/
+   width percentages of that canvas (via --x/--y/--w custom
+   properties on each element), so the whole scene scales together.
+   .hero-stage is wider than the viewport by design — overflow is
+   clipped by .hero-section, and --span-w/--span-left-frac control
+   which slice of the canvas lines up with the viewport edges.
    ============================================================ */
 .hero-section {
-  min-height: 100vh;
   position: relative;
+  width: 100%;
+  height: calc(100vh - var(--nav-height));
+  overflow: hidden;
   margin-top: var(--nav-height);
+  background-color: var(--color-bg);
 }
 
-.parallax-bg {
-  transform: translateY(var(--parallax-offset, 0px));
+.hero-stage {
+  --span-w: 0.79;         /* zoomed out from bunny-left/bear-right band so everything reads smaller */
+  --span-left-frac: 0.0862;  /* centers the bunny↔bear focus in the window, revealing flower1/cat in the extra space on each side */
+  --stage-w: calc(100vw / var(--span-w));
+  position: absolute;
+  bottom: 0;
+  left: calc(-1 * var(--span-left-frac) * var(--stage-w));
+  width: var(--stage-w);
+  aspect-ratio: 4096 / 1714;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Wraps every sprite + icon (not the background, text, or claw —
+   claw has its own dedicated scroll motion). script.ts applies a
+   small spring-eased translateY here on scroll for subtle inertia;
+   children keep positioning against .hero-stage's box since this
+   wrapper is sized to match it exactly. */
+.hero-sprites {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* Generic decorative/character sprite, positioned by % of the stage */
+.sprite {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  z-index: 1;
+}
+
+.sprite img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sprite--claw {
+  z-index: 3;
+  will-change: transform;
+  /* Rests higher/more retracted, then keeps descending the entire
+     time the hero is on screen (--claw-progress, set in script.ts,
+     reaches 1 exactly as the hero scrolls out of frame) — travels
+     well past its resting spot so the motion never just stops mid-air. */
+  transform: translateY(calc(-55% + (115% * var(--claw-progress, 0))));
+}
+
+/* ============================================================
+   HEADLINE TEXT
+   ============================================================ */
+.hero-text {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  z-index: 2;
+  text-align: center;
+}
+
+.hero-text__title {
+  font-family: var(--font-hero);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 5.2vw, 3.75rem);
+  line-height: 1.05;
+  color: var(--color-text);
+  margin: 0 0 0.4em;
+}
+
+.hero-text__tagline {
+  font-family: 'Gaegu', var(--font-sans);
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1.6vw, 1.25rem);
+  color: var(--color-muted);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.hero-text__star {
+  color: #e8c85a;
+}
+
+/* ============================================================
+   SOCIAL ICONS — closed → open cross-fade, clickable
+   ============================================================ */
+/* --x/--y are the icon's center point (not top-left) — closed and
+   open art are now both baked onto identical 400×400 canvases with
+   the badge centered and padded, so a single fixed square + a static
+   centering transform keeps them pinned exactly on hover, no jump. */
+.hero-icon {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: block;
+}
+
+/* Bobbing lives on this inner wrapper instead of .hero-icon itself,
+   since a CSS animation's transform would otherwise overwrite the
+   outer element's static centering transform every frame. */
+.hero-icon__bob {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-icon__img {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-icon__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero-icon__img--closed {
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+.hero-icon__img--open {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.hero-icon:hover .hero-icon__img--closed,
+.hero-icon:focus-visible .hero-icon__img--closed {
+  opacity: 0;
+}
+
+.hero-icon:hover .hero-icon__img--open,
+.hero-icon:focus-visible .hero-icon__img--open {
+  opacity: 1;
+}
+
+.hero-icon:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* ============================================================
+   BOBBING — transform-only, staggered duration/delay per element,
+   several drift paths so movement isn't uniformly vertical.
+   ============================================================ */
+.bob-a, .bob-b, .bob-c, .bob-d, .bob-e {
+  animation-duration: var(--bob-dur, 6s);
+  animation-delay: var(--bob-delay, 0s);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.bob-a { animation-name: bob-a; }
+.bob-b { animation-name: bob-b; }
+.bob-c { animation-name: bob-c; }
+.bob-d { animation-name: bob-d; }
+.bob-e { animation-name: bob-e; }
+
+@keyframes bob-a {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(2.5%, -6%); }
+}
+
+@keyframes bob-b {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-4%, -5%); }
+}
+
+@keyframes bob-c {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-3%, 5%); }
+}
+
+@keyframes bob-d {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(4%, 4%); }
+}
+
+@keyframes bob-e {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(2.5%, -4%); }
+  50%  { transform: translate(-2%, -6.5%); }
+  75%  { transform: translate(-3.5%, -2%); }
+  100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bob-a, .bob-b, .bob-c, .bob-d, .bob-e {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   MOBILE HERO CROP
+   ============================================================
+   Narrower curated slice: keeps the claw, bunny, penguin, girl,
+   bear and all four social icons; hides the peripheral decoration
+   (cat, flowers, stars) that would otherwise crop awkwardly.
+   ============================================================ */
+@media (max-width: 640px) {
+  /* Narrow/tall viewports: a vw-driven stage width comes out far
+     shorter than the screen, so forcing height:100vh here would just
+     leave a big empty gap above the art. Fall back to natural,
+     aspect-ratio-driven height (flow layout) instead of the
+     viewport-fit + bottom-crop used on larger screens. */
+  .hero-section {
+    height: auto;
+  }
+
+  .hero-stage {
+    --span-w: 0.82;         /* zoomed-out curated mobile crop */
+    --span-left-frac: 0.177;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    margin-left: calc(-1 * var(--span-left-frac) * var(--stage-w));
+  }
+
+  .hero-hide-mobile {
+    display: none;
+  }
 }
 
 /* ============================================================
