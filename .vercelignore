@@ -1,0 +1,14 @@
+.claude
+.DS_Store
+.env*
+.git
+.vercel
+node_modules
+package.json
+package-lock.json
+scripts
+script.ts
+tsconfig.json
+vercel.json
+README.md
+.gitignore

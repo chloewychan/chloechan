@@ -53,39 +53,122 @@ if (heroSection && heroClaw) {
     }, { passive: true });
     updateClawProgress();
 }
-// ─── HERO SPRITES: subtle vertical inertia on scroll ──────
-// A light spring: fast scrolling nudges the sprite layer, which then
-// eases back to rest instead of snapping — a bit of "lag" rather than
-// tracking the scroll position 1:1. Runs only while it has noticeable
-// motion left, so it doesn't sit in an idle rAF loop the rest of the time.
+// ─── HERO SPRITES: per-sprite scroll inertia + cursor magnet ──
+// Each sprite (and icon) runs its own light spring simulation on
+// scroll: fast scrolling nudges it, then it eases back to rest instead
+// of snapping — "lag" rather than tracking scroll position 1:1.
+// Kick/friction/max vary per element (via --inertia-kick/
+// --inertia-friction/--inertia-max custom properties, icons falling
+// back to a gentle default) so the scene reads as independent
+// characters instead of one flat block moving together.
+//
+// Decorative sprites (not the claw or the headline text) also get
+// pulled toward the mouse when it's nearby — a soft "magnet" — which
+// eases back to 0 as the cursor moves away. The social icons get the
+// same pull, just much weaker, so they read as reactive without
+// wandering far from their click targets. Both effects are combined
+// into one offset per frame and applied through the standalone
+// `translate` CSS property rather than
+// `transform`, since `transform` is already driven by each element's
+// `bob-*` keyframe animation — `translate` composites with it instead
+// of fighting over the same property.
+//
+// Runs only while something still has noticeable motion left, so it
+// doesn't sit in an idle rAF loop the rest of the time.
 const heroSprites = document.getElementById('heroSprites');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (heroSprites && !prefersReducedMotion) {
-    const KICK = 0.12; // how much a scroll step feeds into the offset
-    const FRICTION = 0.85; // per-frame decay back toward rest
-    const MAX_OFFSET = 10; // px — kept subtle
-    let lastScrollY = window.scrollY;
-    let offset = 0;
-    let rafId = null;
-    const step = () => {
-        const currentScrollY = window.scrollY;
-        const delta = currentScrollY - lastScrollY;
-        lastScrollY = currentScrollY;
-        offset += delta * KICK;
-        offset = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, offset));
-        offset *= FRICTION;
-        if (Math.abs(offset) < 0.05 && Math.abs(delta) < 0.5) {
-            heroSprites.style.transform = '';
-            rafId = null;
-            return;
-        }
-        heroSprites.style.transform = `translateY(${offset.toFixed(2)}px)`;
-        rafId = window.requestAnimationFrame(step);
+    const MAGNET_RADIUS = 220; // px — cursor distance at which pull starts
+    const MAGNET_STRENGTH_SPRITE = 18; // px — max pull for sprites, right under the cursor
+    const MAGNET_STRENGTH_ICON = 6; // px — icons get a much subtler version of the same pull
+    const MAGNET_EASE = 0.15; // per-frame chase toward the target pull
+    const readVar = (el, name, fallback) => {
+        const value = parseFloat(getComputedStyle(el).getPropertyValue(name));
+        return Number.isFinite(value) ? value : fallback;
     };
-    window.addEventListener('scroll', () => {
+    const targets = Array.from(heroSprites.querySelectorAll('.sprite, .hero-icon'));
+    const sprites = targets.map((el) => ({
+        el,
+        magnetStrength: el.classList.contains('sprite') ? MAGNET_STRENGTH_SPRITE : MAGNET_STRENGTH_ICON,
+        kick: readVar(el, '--inertia-kick', 0.12),
+        friction: readVar(el, '--inertia-friction', 0.85),
+        maxOffset: readVar(el, '--inertia-max', 10),
+        scrollOffset: 0,
+        magnetX: 0,
+        magnetY: 0,
+        targetMagnetX: 0,
+        targetMagnetY: 0,
+    }));
+    let lastScrollY = window.scrollY;
+    let mouseX = 0;
+    let mouseY = 0;
+    let hasMouse = false;
+    let rafId = null;
+    const scheduleStep = () => {
         if (rafId === null) {
             rafId = window.requestAnimationFrame(step);
         }
+    };
+    const step = () => {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+        lastScrollY = currentScrollY;
+        let stillActive = false;
+        sprites.forEach((s) => {
+            s.scrollOffset += scrollDelta * s.kick;
+            s.scrollOffset = Math.max(-s.maxOffset, Math.min(s.maxOffset, s.scrollOffset));
+            s.scrollOffset *= s.friction;
+            if (s.magnetStrength > 0) {
+                if (hasMouse) {
+                    const rect = s.el.getBoundingClientRect();
+                    const dx = mouseX - (rect.left + rect.width / 2);
+                    const dy = mouseY - (rect.top + rect.height / 2);
+                    const dist = Math.hypot(dx, dy);
+                    if (dist > 0.01 && dist < MAGNET_RADIUS) {
+                        const pull = (1 - dist / MAGNET_RADIUS) * s.magnetStrength;
+                        s.targetMagnetX = (dx / dist) * pull;
+                        s.targetMagnetY = (dy / dist) * pull;
+                    }
+                    else {
+                        s.targetMagnetX = 0;
+                        s.targetMagnetY = 0;
+                    }
+                }
+                else {
+                    s.targetMagnetX = 0;
+                    s.targetMagnetY = 0;
+                }
+                s.magnetX += (s.targetMagnetX - s.magnetX) * MAGNET_EASE;
+                s.magnetY += (s.targetMagnetY - s.magnetY) * MAGNET_EASE;
+            }
+            const totalX = s.magnetX;
+            const totalY = s.scrollOffset + s.magnetY;
+            const settled = Math.abs(s.scrollOffset) < 0.05 &&
+                Math.abs(scrollDelta) < 0.5 &&
+                Math.abs(s.magnetX) < 0.05 &&
+                Math.abs(s.magnetY) < 0.05 &&
+                Math.abs(s.targetMagnetX) < 0.05 &&
+                Math.abs(s.targetMagnetY) < 0.05;
+            if (settled) {
+                s.el.style.removeProperty('translate');
+            }
+            else {
+                s.el.style.setProperty('translate', `${totalX.toFixed(2)}px ${totalY.toFixed(2)}px`);
+                stillActive = true;
+            }
+        });
+        rafId = stillActive ? window.requestAnimationFrame(step) : null;
+    };
+    window.addEventListener('scroll', scheduleStep, { passive: true });
+    heroSection?.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        hasMouse = true;
+        scheduleStep();
+    }, { passive: true });
+    heroSection?.addEventListener('mouseleave', () => {
+        hasMouse = false;
+        scheduleStep();
     }, { passive: true });
 }
 // ─── REVEAL BOXES ─────────────────────────────────────────

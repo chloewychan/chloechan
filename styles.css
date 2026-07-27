@@ -175,23 +175,28 @@ body {
 }
 
 /* Wraps every sprite + icon (not the background, text, or claw —
-   claw has its own dedicated scroll motion). script.ts applies a
-   small spring-eased translateY here on scroll for subtle inertia;
-   children keep positioning against .hero-stage's box since this
-   wrapper is sized to match it exactly. */
+   claw has its own dedicated scroll motion). Purely a positioning
+   frame: children keep positioning against .hero-stage's box since
+   this wrapper is sized to match it exactly. script.ts gives each
+   child its own spring-eased scroll inertia individually (see
+   --inertia-kick/--inertia-friction/--inertia-max below) rather than
+   moving this wrapper as one block. */
 .hero-sprites {
   position: absolute;
   inset: 0;
-  will-change: transform;
 }
 
-/* Generic decorative/character sprite, positioned by % of the stage */
+/* Generic decorative/character sprite, positioned by % of the stage.
+   will-change targets `translate` (script.ts's per-sprite scroll
+   inertia), which is separate from the `transform` property driven by
+   this element's own bob-* keyframe animation. */
 .sprite {
   position: absolute;
   left: var(--x);
   top: var(--y);
   width: var(--w);
   z-index: 1;
+  will-change: translate;
 }
 
 .sprite img {
@@ -260,6 +265,7 @@ body {
   transform: translate(-50%, -50%);
   z-index: 2;
   display: block;
+  will-change: translate;
 }
 
 /* Bobbing lives on this inner wrapper instead of .hero-icon itself,

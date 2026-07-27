@@ -19,3 +19,5 @@ Thumbs.db
 
 # Images
 /images/
+.vercel
+.env*
