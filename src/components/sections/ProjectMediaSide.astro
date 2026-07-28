@@ -1,0 +1,55 @@
+---
+// Layout: a content column (title, tagline, carousel, reveal-box) beside a
+// placeholder media box (hidden below md). `mediaPosition` flips which
+// side the media box renders on without duplicating any markup — the
+// content column always comes first in the DOM; `md:order-first` just
+// visually moves the media box ahead of it when it should sit on the left.
+import ProjectCarousel from './ProjectCarousel.astro';
+import ProjectRevealBox from './ProjectRevealBox.astro';
+
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  role: string;
+  timeline: string;
+  technologies: string;
+  details: string;
+  carouselPlaceholder: string;
+  carouselSlides: number;
+  mediaPosition: 'left' | 'right';
+  mediaPlaceholder: string;
+}
+
+const {
+  id,
+  title,
+  tagline,
+  role,
+  timeline,
+  technologies,
+  details,
+  carouselPlaceholder,
+  carouselSlides,
+  mediaPosition,
+  mediaPlaceholder,
+} = Astro.props;
+---
+
+<section id={id} class="full-page-section flex items-center">
+  <div class="max-w-7xl mx-auto w-full px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div class="min-w-0">
+      <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
+      <h2 class="font-serif text-4xl md:text-5xl mb-6">{title}</h2>
+      <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">{tagline}</p>
+      <ProjectCarousel placeholder={carouselPlaceholder} slides={carouselSlides} />
+      <ProjectRevealBox role={role} timeline={timeline} technologies={technologies} details={details} />
+    </div>
+
+    <div class:list={['hidden md:flex items-center justify-center', mediaPosition === 'left' && 'md:order-first']}>
+      <div class="w-full aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">
+        {mediaPlaceholder}
+      </div>
+    </div>
+  </div>
+</section>

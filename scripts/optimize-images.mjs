@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Generates responsive AVIF/WebP/PNG assets for the hero section from the
-// source art in images/hero/. Run whenever background.PNG or any file in
-// images/hero/sprites/ changes.
+// raw source art in assets/hero-source/ (kept out of public/ since only the
+// generated output needs to ship). Run whenever background.PNG or any file
+// in assets/hero-source/sprites/ changes.
 //
 // Usage:  node scripts/optimize-images.mjs
 // Requires: npm install sharp  (devDependency, already in package.json)
@@ -11,9 +12,9 @@ import { readdirSync, mkdirSync, existsSync } from 'fs';
 import { join, basename, extname } from 'path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
-const HERO_DIR = join(ROOT, 'images', 'hero');
-const SPRITES_DIR = join(HERO_DIR, 'sprites');
-const OUT_DIR = join(HERO_DIR, 'optimized');
+const HERO_SOURCE_DIR = join(ROOT, 'assets', 'hero-source');
+const SPRITES_DIR = join(HERO_SOURCE_DIR, 'sprites');
+const OUT_DIR = join(ROOT, 'public', 'images', 'hero');
 const OUT_SPRITES_DIR = join(OUT_DIR, 'sprites');
 
 const BACKGROUND_WIDTHS = [800, 1200, 1600, 2400, 3200, 4096];
@@ -47,11 +48,11 @@ async function buildNativeSet(srcPath, outDir, baseName) {
 
 async function main() {
   console.log('Optimizing hero background (responsive widths)...');
-  const bgPath = join(HERO_DIR, 'background.PNG');
+  const bgPath = join(HERO_SOURCE_DIR, 'background.PNG');
   if (existsSync(bgPath)) {
     await buildResponsiveSet(bgPath, OUT_DIR, 'background', BACKGROUND_WIDTHS);
   } else {
-    console.warn('  images/hero/background.PNG not found, skipping.');
+    console.warn('  assets/hero-source/background.PNG not found, skipping.');
   }
 
   console.log('Optimizing hero sprites (native size, multi-format)...');
@@ -62,10 +63,10 @@ async function main() {
       await buildNativeSet(join(SPRITES_DIR, file), OUT_SPRITES_DIR, baseName);
     }
   } else {
-    console.warn('  images/hero/sprites/ not found, skipping.');
+    console.warn('  assets/hero-source/sprites/ not found, skipping.');
   }
 
-  console.log('Done. Output in images/hero/optimized/');
+  console.log('Done. Output in public/images/hero/');
 }
 
 main().catch((err) => {

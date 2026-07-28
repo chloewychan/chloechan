@@ -1,0 +1,31 @@
+---
+interface Track {
+  title: string;
+  meta: string;
+}
+
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  tracks: Track[];
+}
+
+const { id, title, tagline, tracks } = Astro.props;
+---
+
+<section id={id} class="full-page-section flex items-center">
+  <div class="max-w-3xl mx-auto w-full px-6 text-center">
+    <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+    <h2 class="font-serif text-5xl md:text-6xl mb-6">{title}</h2>
+    <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">{tagline}</p>
+    <div class="mt-12 space-y-4 max-w-md mx-auto">
+      {tracks.map((track) => (
+        <div class="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-4 text-left">
+          <p class="font-medium">{track.title}</p>
+          <p class="text-sm text-[var(--color-muted)]">{track.meta}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

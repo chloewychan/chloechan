@@ -1,0 +1,52 @@
+---
+interface Props {
+  placeholder: string;
+  slides: number;
+}
+
+const { placeholder, slides } = Astro.props;
+---
+
+<div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
+  <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
+    <span class="text-[var(--color-muted)]">{placeholder}</span>
+  </div>
+  <div class="carousel-controls flex justify-between items-center p-4 bg-[var(--color-surface)]">
+    <button class="carousel-prev text-[var(--color-muted)] hover:text-[var(--color-brand)]">← Previous</button>
+    <span class="carousel-indicator text-sm text-[var(--color-muted)]">1 / {slides}</span>
+    <button class="carousel-next text-[var(--color-muted)] hover:text-[var(--color-brand)]">Next →</button>
+  </div>
+</div>
+
+<script>
+  // Astro dedupes this script across every ProjectCarousel instance on the
+  // page, so it only runs once — same as the original global querySelectorAll.
+  document.querySelectorAll('.carousel').forEach((carousel: Element) => {
+    const prevBtn = carousel.querySelector('.carousel-prev') as HTMLButtonElement | null;
+    const nextBtn = carousel.querySelector('.carousel-next') as HTMLButtonElement | null;
+    const indicator = carousel.querySelector('.carousel-indicator') as HTMLElement | null;
+
+    if (prevBtn && nextBtn && indicator) {
+      let currentSlide = 1;
+      const totalSlides = parseInt(indicator.textContent?.split(' / ')[1] || '3');
+
+      const updateIndicator = () => {
+        if (indicator) {
+          indicator.textContent = `${currentSlide} / ${totalSlides}`;
+        }
+      };
+
+      prevBtn.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        currentSlide = currentSlide > 1 ? currentSlide - 1 : totalSlides;
+        updateIndicator();
+      });
+
+      nextBtn.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        currentSlide = currentSlide < totalSlides ? currentSlide + 1 : 1;
+        updateIndicator();
+      });
+    }
+  });
+</script>

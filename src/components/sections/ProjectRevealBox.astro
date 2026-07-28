@@ -1,0 +1,35 @@
+---
+interface Props {
+  role: string;
+  timeline: string;
+  technologies: string;
+  details: string;
+}
+
+const { role, timeline, technologies, details } = Astro.props;
+---
+
+<div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
+  <div class="reveal-trigger font-medium text-[var(--color-text)]">
+    ✦ Click to reveal project details
+  </div>
+  <div class="reveal-content hidden mt-4 text-[var(--color-muted)] space-y-2">
+    <p><strong>Role:</strong> {role}</p>
+    <p><strong>Timeline:</strong> {timeline}</p>
+    <p><strong>Technologies:</strong> {technologies}</p>
+    <p class="mt-4">{details}</p>
+  </div>
+</div>
+
+<script>
+  // Astro dedupes this script across every ProjectRevealBox instance on the
+  // page, so it only runs once — same as the original global querySelectorAll.
+  document.querySelectorAll('.reveal-box').forEach((box: Element) => {
+    box.addEventListener('click', () => {
+      const content = box.querySelector('.reveal-content') as HTMLElement | null;
+      if (content) {
+        content.classList.toggle('hidden');
+      }
+    });
+  });
+</script>

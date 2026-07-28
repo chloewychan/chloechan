@@ -1,0 +1,14 @@
+{
+  "title": "Reverielle",
+  "tagline": "A beautiful application that brings imagination to life. Reverielle is designed for creators who want to express themselves through intuitive design.",
+  "order": 1,
+  "layout": "media-side",
+  "mediaPosition": "right",
+  "mediaPlaceholder": "iPhone Portrait Image",
+  "role": "Product Designer & Developer",
+  "timeline": "6 months",
+  "technologies": "React, TypeScript, Tailwind CSS",
+  "details": "A comprehensive design and development project focused on creating an intuitive user experience for creative professionals.",
+  "carouselPlaceholder": "iPhone Portrait Placeholder",
+  "carouselSlides": 3
+}

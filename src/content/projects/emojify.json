@@ -1,0 +1,12 @@
+{
+  "title": "Emojify",
+  "tagline": "Transform text into expressive emoji art. Emojify brings creativity and fun to digital communication.",
+  "order": 4,
+  "layout": "full-width",
+  "role": "Full Stack Developer",
+  "timeline": "3 months",
+  "technologies": "Node.js, React, API Integration",
+  "details": "A fun web application that uses AI to convert text into creative emoji representations.",
+  "carouselPlaceholder": "Landscape Desktop Placeholder",
+  "carouselSlides": 4
+}

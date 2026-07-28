@@ -1,0 +1,11 @@
+{
+  "title": "Music",
+  "tagline": "Original compositions and music production showcasing diverse genres and creative expression.",
+  "order": 5,
+  "layout": "track-list",
+  "tracks": [
+    { "title": "Track Title", "meta": "Genre • 3:45" },
+    { "title": "Another Track", "meta": "Genre • 4:12" },
+    { "title": "More Music", "meta": "Genre • 5:00" }
+  ]
+}

@@ -1,0 +1,102 @@
+---
+// Renders both the desktop dropdown nav and the mobile flat-list menu from
+// the same `categories` data — they can no longer drift out of sync the way
+// three hand-written copies could.
+interface NavItem {
+  id: string;
+  title: string;
+}
+
+interface NavCategory {
+  id: string; // section anchor, e.g. "projects"
+  singular: string; // item anchor prefix, e.g. "project" -> #project-reverielle
+  label: string; // nav display label, e.g. "Projects"
+  items: NavItem[];
+}
+
+interface Props {
+  categories: NavCategory[];
+}
+
+const { categories } = Astro.props;
+---
+
+<header id="top" class="fixed top-0 left-0 right-0 z-50 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
+  <nav class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+    <a href="#top" class="header-logo text-lg tracking-tight text-[var(--color-text)] hover:text-[var(--color-brand)] transition-colors">
+      Chloe Chan
+    </a>
+
+    <!-- Nav links with dropdowns (desktop) -->
+    <ul class="hidden sm:flex items-center gap-1">
+      {categories.map((category) => (
+        <li class="relative group">
+          <a href={`#${category.id}`} class="nav-link">
+            {category.label}
+            <svg class="ml-1 w-3 h-3 inline-block opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </a>
+          <div class="dropdown">
+            {category.items.map((item) => (
+              <a href={`#${category.singular}-${item.id}`} class="dropdown-item">{item.title}</a>
+            ))}
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Menu toggle (mobile only) -->
+    <button type="button" id="mobileMenuToggle" class="sm:hidden -mr-2 p-2 text-[var(--color-text)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg id="mobileMenuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      <svg id="mobileMenuIconClose" class="hidden w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Nav links (mobile) — flat list, no hover dropdowns since touch has no hover -->
+  <div id="mobileMenu" class="hidden sm:hidden border-t border-[var(--color-border)] bg-[var(--color-bg)] max-h-[calc(100vh-var(--nav-height))] overflow-y-auto">
+    <div class="px-4 py-2">
+      {categories.map((category) => (
+        <Fragment>
+          <p class="nav-link !cursor-default !px-3 !pt-3 !pb-1 text-xs uppercase tracking-widest opacity-60">{category.label}</p>
+          {category.items.map((item) => (
+            <a href={`#${category.singular}-${item.id}`} class="dropdown-item !whitespace-normal !py-2.5 !text-sm">{item.title}</a>
+          ))}
+        </Fragment>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  // The desktop nav's dropdowns are hover-driven, which doesn't work on
+  // touch — below the sm breakpoint it's replaced by a hamburger button
+  // that toggles a flat link list instead.
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle') as HTMLButtonElement | null;
+  const mobileMenu = document.getElementById('mobileMenu') as HTMLElement | null;
+  const mobileMenuIconOpen = document.getElementById('mobileMenuIconOpen') as HTMLElement | null;
+  const mobileMenuIconClose = document.getElementById('mobileMenuIconClose') as HTMLElement | null;
+
+  if (mobileMenuToggle && mobileMenu && mobileMenuIconOpen && mobileMenuIconClose) {
+    const setOpen = (open: boolean) => {
+      mobileMenu.classList.toggle('hidden', !open);
+      mobileMenuIconOpen.classList.toggle('hidden', open);
+      mobileMenuIconClose.classList.toggle('hidden', !open);
+      mobileMenuToggle.setAttribute('aria-expanded', String(open));
+      mobileMenuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    };
+
+    mobileMenuToggle.addEventListener('click', () => {
+      setOpen(mobileMenu.classList.contains('hidden'));
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#mobileMenuToggle') && !target.closest('#mobileMenu')) {
+        setOpen(false);
+      }
+    });
+  }
+</script>

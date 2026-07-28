@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "chloechan-site",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", "-p", "8123", "-c-1"],
-      "port": 8123
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 4321
     }
   ]
 }

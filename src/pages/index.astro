@@ -1,0 +1,99 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import ProjectMediaSide from '../components/sections/ProjectMediaSide.astro';
+import ProjectFullWidth from '../components/sections/ProjectFullWidth.astro';
+import CompanySection from '../components/sections/CompanySection.astro';
+import PortfolioImageGrid from '../components/sections/PortfolioImageGrid.astro';
+import PortfolioTrackList from '../components/sections/PortfolioTrackList.astro';
+
+const byOrder = (a: { data: { order: number } }, b: { data: { order: number } }) => a.data.order - b.data.order;
+
+// `hidden: true` in a content file removes an item from the nav AND the
+// page in this one filter — that's the whole "hide a project" feature.
+const projects = (await getCollection('projects', ({ data }) => !data.hidden)).sort(byOrder);
+const companies = (await getCollection('companies', ({ data }) => !data.hidden)).sort(byOrder);
+const portfolio = (await getCollection('portfolio', ({ data }) => !data.hidden)).sort(byOrder);
+
+const navCategories = [
+  { id: 'projects', singular: 'project', label: 'Projects', items: projects.map((p) => ({ id: p.id, title: p.data.title })) },
+  { id: 'companies', singular: 'company', label: 'Companies', items: companies.map((c) => ({ id: c.id, title: c.data.title })) },
+  { id: 'portfolio', singular: 'portfolio', label: 'Portfolio', items: portfolio.map((p) => ({ id: p.id, title: p.data.title })) },
+];
+
+type Project = CollectionEntry<'projects'>;
+type Portfolio = CollectionEntry<'portfolio'>;
+---
+
+<BaseLayout>
+  <Nav slot="nav" categories={navCategories} />
+  <Hero />
+
+  <section id="projects" class="scroll-mt-20">
+    {projects.map((project: Project) =>
+      project.data.layout === 'media-side' ? (
+        <ProjectMediaSide
+          id={`project-${project.id}`}
+          title={project.data.title}
+          tagline={project.data.tagline}
+          role={project.data.role}
+          timeline={project.data.timeline}
+          technologies={project.data.technologies}
+          details={project.data.details}
+          carouselPlaceholder={project.data.carouselPlaceholder}
+          carouselSlides={project.data.carouselSlides}
+          mediaPosition={project.data.mediaPosition ?? 'right'}
+          mediaPlaceholder={project.data.mediaPlaceholder ?? ''}
+        />
+      ) : (
+        <ProjectFullWidth
+          id={`project-${project.id}`}
+          title={project.data.title}
+          tagline={project.data.tagline}
+          role={project.data.role}
+          timeline={project.data.timeline}
+          technologies={project.data.technologies}
+          details={project.data.details}
+          carouselPlaceholder={project.data.carouselPlaceholder}
+          carouselSlides={project.data.carouselSlides}
+        />
+      )
+    )}
+  </section>
+
+  <section id="companies" class="scroll-mt-20">
+    {companies.map((company) => (
+      <CompanySection
+        id={`company-${company.id}`}
+        title={company.data.title}
+        tagline={company.data.tagline}
+        position={company.data.position}
+        timeline={company.data.timeline}
+        description={company.data.description}
+      />
+    ))}
+  </section>
+
+  <section id="portfolio" class="scroll-mt-20">
+    {portfolio.map((item: Portfolio) =>
+      item.data.layout === 'image-grid' ? (
+        <PortfolioImageGrid
+          id={`portfolio-${item.id}`}
+          title={item.data.title}
+          tagline={item.data.tagline}
+          imageCount={item.data.imageCount ?? 3}
+          imagePlaceholder={item.data.imagePlaceholder ?? 'Portfolio Image'}
+        />
+      ) : (
+        <PortfolioTrackList
+          id={`portfolio-${item.id}`}
+          title={item.data.title}
+          tagline={item.data.tagline}
+          tracks={item.data.tracks ?? []}
+        />
+      )
+    )}
+  </section>
+</BaseLayout>

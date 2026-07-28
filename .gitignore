@@ -1,3 +1,7 @@
+# Astro build output / generated types
+dist/
+.astro/
+
 # Dependencies
 node_modules/
 package-lock.json
@@ -8,7 +12,7 @@ package-lock.json
 
 # IDE
 .vscode/
-.DS_Store
+.idea/
 *.swp
 *.swo
 *~
@@ -17,7 +21,10 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
-# Images
-/images/
+# Images — served output + raw source art are large binaries, kept out of git;
+# deploys upload the local filesystem directly (see scripts/optimize-images.mjs)
+/public/images/
+/assets/hero-source/
+
 .vercel
 .env*

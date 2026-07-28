@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  imageCount: number;
+  imagePlaceholder: string;
+}
+
+const { id, title, tagline, imageCount, imagePlaceholder } = Astro.props;
+const images = Array.from({ length: imageCount });
+---
+
+<section id={id} class="full-page-section flex items-center">
+  <div class="max-w-3xl mx-auto w-full px-6 text-center">
+    <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Portfolio</span>
+    <h2 class="font-serif text-5xl md:text-6xl mb-6">{title}</h2>
+    <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">{tagline}</p>
+    <div class="grid md:grid-cols-3 gap-4 mt-12">
+      {images.map(() => (
+        <div class="aspect-square bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg flex items-center justify-center text-[var(--color-muted)]">
+          {imagePlaceholder}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

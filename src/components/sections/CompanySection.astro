@@ -1,0 +1,25 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  tagline: string;
+  position: string;
+  timeline: string;
+  description: string;
+}
+
+const { id, title, tagline, position, timeline, description } = Astro.props;
+---
+
+<section id={id} class="full-page-section flex items-center">
+  <div class="max-w-3xl mx-auto w-full px-6 text-center">
+    <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Company</span>
+    <h2 class="font-serif text-5xl md:text-6xl mb-6">{title}</h2>
+    <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">{tagline}</p>
+    <div class="space-y-4 text-left max-w-xl mx-auto">
+      <p><strong>Position:</strong> {position}</p>
+      <p><strong>Timeline:</strong> {timeline}</p>
+      <p class="text-[var(--color-muted)]">{description}</p>
+    </div>
+  </div>
+</section>

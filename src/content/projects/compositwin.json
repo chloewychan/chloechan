@@ -1,0 +1,14 @@
+{
+  "title": "Compositwin",
+  "tagline": "Compositwin is a mobile-first platform that simplifies complex workflows. Built with modern design principles and responsive functionality.",
+  "order": 2,
+  "layout": "media-side",
+  "mediaPosition": "left",
+  "mediaPlaceholder": "iPhone Portrait Image",
+  "role": "UI/UX Designer",
+  "timeline": "4 months",
+  "technologies": "Figma, Prototyping, User Research",
+  "details": "A mobile application that streamlines creative workflows through intuitive interface design and user-centered development.",
+  "carouselPlaceholder": "iPhone Portrait Placeholder",
+  "carouselSlides": 3
+}

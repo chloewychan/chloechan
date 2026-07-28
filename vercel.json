@@ -1,6 +1,0 @@
-{
-  "framework": null,
-  "outputDirectory": ".",
-  "installCommand": "echo 'static site — no install needed'",
-  "buildCommand": "echo 'static site — script.js is pre-built and committed'"
-}
