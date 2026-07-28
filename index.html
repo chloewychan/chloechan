@@ -38,8 +38,8 @@
         Chloe Chan
       </a>
 
-      <!-- Nav links with dropdowns -->
-      <ul class="flex items-center gap-1">
+      <!-- Nav links with dropdowns (desktop) -->
+      <ul class="hidden sm:flex items-center gap-1">
 
         <!-- Projects -->
         <li class="relative group">
@@ -84,7 +84,38 @@
         </li>
 
       </ul>
+
+      <!-- Menu toggle (mobile only) -->
+      <button type="button" id="mobileMenuToggle" class="sm:hidden -mr-2 p-2 text-[var(--color-text)]" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg id="mobileMenuIconOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg id="mobileMenuIconClose" class="hidden w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </nav>
+
+    <!-- Nav links (mobile) — flat list, no hover dropdowns since touch has no hover -->
+    <div id="mobileMenu" class="hidden sm:hidden border-t border-[var(--color-border)] bg-[var(--color-bg)] max-h-[calc(100vh-var(--nav-height))] overflow-y-auto">
+      <div class="px-4 py-2">
+
+        <p class="nav-link !cursor-default !px-3 !pt-3 !pb-1 text-xs uppercase tracking-widest opacity-60">Projects</p>
+        <a href="#project-reverielle" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Reverielle</a>
+        <a href="#project-compositwin" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Compositwin</a>
+        <a href="#project-video-game" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Video Game</a>
+        <a href="#project-emojify" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Emojify</a>
+
+        <p class="nav-link !cursor-default !px-3 !pt-3 !pb-1 text-xs uppercase tracking-widest opacity-60">Companies</p>
+        <a href="#company-chloefriendly" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">ChloeFriendly</a>
+        <a href="#company-calla" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Calla Curve</a>
+        <a href="#company-sewciety" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Sewciety</a>
+
+        <p class="nav-link !cursor-default !px-3 !pt-3 !pb-1 text-xs uppercase tracking-widest opacity-60">Portfolio</p>
+        <a href="#portfolio-acrobatics" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Acrobatics & Contortion</a>
+        <a href="#portfolio-visual-arts" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Visual Arts</a>
+        <a href="#portfolio-beauty-fashion" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Beauty & Fashion</a>
+        <a href="#portfolio-interior-design" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Interior Design</a>
+        <a href="#portfolio-music" class="dropdown-item !whitespace-normal !py-2.5 !text-sm">Music</a>
+
+      </div>
+    </div>
   </header>
 
   <main>
@@ -115,13 +146,13 @@
         </picture>
 
         <!-- Headline text -->
-        <div class="hero-text" style="--x:32.53%; --y:27.25%; --w:16%;">
+        <div class="hero-text" style="--x:32.53%; --y:27.25%; --w:16%; --x-mobile:8%; --y-mobile:20%; --w-mobile:84%;">
           <p class="hero-text__title">Hi, I&rsquo;m<br>Chloe!</p>
           <p class="hero-text__tagline">designer <span class="hero-text__star">✦</span> developer <span class="hero-text__star">✦</span> artist</p>
         </div>
 
         <!-- Claw (no bob — scroll-linked descent instead) -->
-        <picture class="sprite sprite--claw" id="heroClaw" style="--x:20.07%; --y:8%; --w:11.67%;">
+        <picture class="sprite sprite--claw" id="heroClaw" style="--x:20.07%; --y:8%; --w:11.67%; --x-mobile:3%; --y-mobile:0%; --w-mobile:14%;">
           <source type="image/avif" srcset="images/hero/optimized/sprites/claw.avif">
           <source type="image/webp" srcset="images/hero/optimized/sprites/claw.webp">
           <img src="images/hero/optimized/sprites/claw.png" width="485" height="1256" alt="" loading="eager" decoding="async" />
@@ -132,13 +163,13 @@
         <div class="hero-sprites" id="heroSprites">
 
         <!-- Decorative bobbing sprites -->
-        <picture class="sprite bob-a" style="--x:59.55%; --y:38.33%; --w:18.95%; --bob-dur:7.4s; --bob-delay:-2.1s; --inertia-kick:0.20; --inertia-friction:0.90; --inertia-max:30;">
+        <picture class="sprite bob-a" style="--x:59.55%; --y:38.33%; --w:18.95%; --bob-dur:7.4s; --bob-delay:-2.1s; --inertia-kick:0.20; --inertia-friction:0.90; --inertia-max:30; --x-mobile:14%; --y-mobile:44%; --w-mobile:26%;">
           <source type="image/avif" srcset="images/hero/optimized/sprites/bear.avif">
           <source type="image/webp" srcset="images/hero/optimized/sprites/bear.webp">
           <img src="images/hero/optimized/sprites/bear.png" width="776" height="1057" alt="" loading="eager" decoding="async" />
         </picture>
 
-        <picture class="sprite bob-b" style="--x:17.75%; --y:57.00%; --w:12.99%; --bob-dur:5.6s; --bob-delay:-0.6s; --inertia-kick:0.42; --inertia-friction:0.78; --inertia-max:26;">
+        <picture class="sprite bob-b" style="--x:17.75%; --y:57.00%; --w:12.99%; --bob-dur:5.6s; --bob-delay:-0.6s; --inertia-kick:0.42; --inertia-friction:0.78; --inertia-max:26; --x-mobile:17%; --y-mobile:64%; --w-mobile:20%;">
           <source type="image/avif" srcset="images/hero/optimized/sprites/bunny.avif">
           <source type="image/webp" srcset="images/hero/optimized/sprites/bunny.webp">
           <img src="images/hero/optimized/sprites/bunny.png" width="532" height="733" alt="" loading="eager" decoding="async" />
@@ -150,13 +181,13 @@
           <img src="images/hero/optimized/sprites/cat.png" width="448" height="536" alt="" loading="eager" decoding="async" />
         </picture>
 
-        <picture class="sprite bob-d" style="--x:46.58%; --y:57.88%; --w:16.16%; --bob-dur:6.9s; --bob-delay:-1.8s; --inertia-kick:0.30; --inertia-friction:0.84; --inertia-max:24;">
+        <picture class="sprite bob-d" style="--x:46.58%; --y:57.88%; --w:16.16%; --bob-dur:6.9s; --bob-delay:-1.8s; --inertia-kick:0.30; --inertia-friction:0.84; --inertia-max:24; --x-mobile:62%; --y-mobile:44%; --w-mobile:22%;">
           <source type="image/avif" srcset="images/hero/optimized/sprites/girl.avif">
           <source type="image/webp" srcset="images/hero/optimized/sprites/girl.webp">
           <img src="images/hero/optimized/sprites/girl.png" width="662" height="705" alt="" loading="eager" decoding="async" />
         </picture>
 
-        <picture class="sprite bob-e" style="--x:29.64%; --y:68.84%; --w:10.64%; --bob-dur:5.2s; --bob-delay:-2.7s; --inertia-kick:0.46; --inertia-friction:0.75; --inertia-max:20;">
+        <picture class="sprite bob-e" style="--x:29.64%; --y:68.84%; --w:10.64%; --bob-dur:5.2s; --bob-delay:-2.7s; --inertia-kick:0.46; --inertia-friction:0.75; --inertia-max:20; --x-mobile:64%; --y-mobile:64%; --w-mobile:18%;">
           <source type="image/avif" srcset="images/hero/optimized/sprites/penguin.avif">
           <source type="image/webp" srcset="images/hero/optimized/sprites/penguin.webp">
           <img src="images/hero/optimized/sprites/penguin.png" width="436" height="534" alt="" loading="eager" decoding="async" />
@@ -194,7 +225,7 @@
 
         <!-- Social icons: closed → open on hover/focus, clickable -->
         <a class="hero-icon" href="https://www.linkedin.com/in/chloe-chan-339819290" target="_blank" rel="noopener" aria-label="Chloe on LinkedIn"
-           style="--x:28.45%; --y:89.26%; --w:9.97%;">
+           style="--x:28.45%; --y:89.26%; --w:9.97%; --x-mobile:15%; --y-mobile:87%; --w-mobile:13%;">
           <span class="hero-icon__bob bob-a" style="--bob-dur:5.4s; --bob-delay:-1.2s;">
             <picture class="hero-icon__img hero-icon__img--closed">
               <source type="image/avif" srcset="images/hero/optimized/sprites/linkedin-closed.avif">
@@ -210,7 +241,7 @@
         </a>
 
         <a class="hero-icon" href="https://github.com/chloewychan/" target="_blank" rel="noopener" aria-label="Chloe on GitHub"
-           style="--x:42.80%; --y:86.46%; --w:9.85%;">
+           style="--x:42.80%; --y:86.46%; --w:9.85%; --x-mobile:38%; --y-mobile:91%; --w-mobile:13%;">
           <span class="hero-icon__bob bob-b" style="--bob-dur:6.1s; --bob-delay:-2.9s;">
             <picture class="hero-icon__img hero-icon__img--closed">
               <source type="image/avif" srcset="images/hero/optimized/sprites/github-closed.avif">
@@ -226,7 +257,7 @@
         </a>
 
         <a class="hero-icon" href="mailto:dev.chloe.c@gmail.com" aria-label="Email Chloe"
-           style="--x:52.28%; --y:92.18%; --w:10.01%;">
+           style="--x:52.28%; --y:92.18%; --w:10.01%; --x-mobile:62%; --y-mobile:87%; --w-mobile:13%;">
           <span class="hero-icon__bob bob-c" style="--bob-dur:5.0s; --bob-delay:-3.6s;">
             <picture class="hero-icon__img hero-icon__img--closed">
               <source type="image/avif" srcset="images/hero/optimized/sprites/email-closed.avif">
@@ -242,7 +273,7 @@
         </a>
 
         <a class="hero-icon" href="https://www.instagram.com/chloelotus" target="_blank" rel="noopener" aria-label="Chloe on Instagram"
-           style="--x:62.66%; --y:89.67%; --w:10.25%;">
+           style="--x:62.66%; --y:89.67%; --w:10.25%; --x-mobile:85%; --y-mobile:91%; --w-mobile:13%;">
           <span class="hero-icon__bob bob-d" style="--bob-dur:6.8s; --bob-delay:-0.9s;">
             <picture class="hero-icon__img hero-icon__img--closed">
               <source type="image/avif" srcset="images/hero/optimized/sprites/instagram-closed.avif">
@@ -268,7 +299,7 @@
       <section id="project-reverielle" class="full-page-section flex items-center">
         <div class="max-w-7xl mx-auto w-full px-6 grid md:grid-cols-2 gap-12 items-center">
           <!-- Content -->
-          <div>
+          <div class="min-w-0">
             <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
             <h2 class="font-serif text-4xl md:text-5xl mb-6">Reverielle</h2>
             <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
@@ -318,8 +349,8 @@
               iPhone Portrait Image
             </div>
           </div>
-          
-          <div>
+
+          <div class="min-w-0">
             <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-4 block">Project</span>
             <h2 class="font-serif text-4xl md:text-5xl mb-6">Compositwin</h2>
             <p class="text-lg text-[var(--color-muted)] mb-8 leading-relaxed">
@@ -364,7 +395,7 @@
           </div>
 
           <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
+            <div class="min-w-0">
               <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
                 <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
                   <span class="text-[var(--color-muted)]">Landscape Desktop Placeholder</span>
@@ -377,7 +408,7 @@
               </div>
             </div>
 
-            <div>
+            <div class="min-w-0">
               <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
                 <div class="reveal-trigger font-medium text-[var(--color-text)]">
                   ✦ Click to reveal project details
@@ -406,7 +437,7 @@
           </div>
 
           <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div>
+            <div class="min-w-0">
               <div class="carousel mb-8 border border-[var(--color-border)] rounded-lg overflow-hidden">
                 <div class="carousel-inner relative bg-[var(--color-surface)] aspect-video flex items-center justify-center">
                   <span class="text-[var(--color-muted)]">Landscape Desktop Placeholder</span>
@@ -419,7 +450,7 @@
               </div>
             </div>
 
-            <div>
+            <div class="min-w-0">
               <div class="reveal-box bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 cursor-pointer hover:border-[var(--color-brand)] transition-colors">
                 <div class="reveal-trigger font-medium text-[var(--color-text)]">
                   ✦ Click to reveal project details

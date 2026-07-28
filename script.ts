@@ -24,6 +24,40 @@ document.addEventListener('click', (e: Event) => {
   }
 });
 
+// ─── MOBILE NAV MENU ───────────────────────────────────────
+// The desktop nav's dropdowns are hover-driven, which doesn't work on
+// touch — below the sm breakpoint it's replaced by a hamburger button
+// that toggles a flat link list instead.
+const mobileMenuToggle = document.getElementById('mobileMenuToggle') as HTMLButtonElement | null;
+const mobileMenu = document.getElementById('mobileMenu') as HTMLElement | null;
+const mobileMenuIconOpen = document.getElementById('mobileMenuIconOpen') as HTMLElement | null;
+const mobileMenuIconClose = document.getElementById('mobileMenuIconClose') as HTMLElement | null;
+
+if (mobileMenuToggle && mobileMenu && mobileMenuIconOpen && mobileMenuIconClose) {
+  const setOpen = (open: boolean) => {
+    mobileMenu.classList.toggle('hidden', !open);
+    mobileMenuIconOpen.classList.toggle('hidden', open);
+    mobileMenuIconClose.classList.toggle('hidden', !open);
+    mobileMenuToggle.setAttribute('aria-expanded', String(open));
+    mobileMenuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  };
+
+  mobileMenuToggle.addEventListener('click', () => {
+    setOpen(mobileMenu.classList.contains('hidden'));
+  });
+
+  mobileMenu.querySelectorAll('a').forEach((link: Element) => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+
+  document.addEventListener('click', (e: Event) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('#mobileMenuToggle') && !target.closest('#mobileMenu')) {
+      setOpen(false);
+    }
+  });
+}
+
 // ─── HERO CLAW: descends toward the bunny as you scroll ───
 // --claw-progress goes 0 (resting, matches hero-preview) → 1 (right as
 // the hero fully scrolls out of frame — rawProgress is exactly 1 at

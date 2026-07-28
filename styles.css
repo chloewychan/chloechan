@@ -367,29 +367,54 @@ body {
 }
 
 /* ============================================================
-   MOBILE HERO CROP
+   MOBILE HERO LAYOUT
    ============================================================
-   Narrower curated slice: keeps the claw, bunny, penguin, girl,
-   bear and all four social icons; hides the peripheral decoration
-   (cat, flowers, stars) that would otherwise crop awkwardly.
+   The desktop hero positions everything on one wide (4096×1714)
+   canvas and crops a horizontal slice of it — that math doesn't
+   translate to a tall portrait screen, so mobile gets its own
+   coordinate space instead: .hero-stage fills the section directly
+   (no fixed aspect-ratio, no horizontal crop/pan), and every visible
+   element gets a dedicated --x-mobile/--y-mobile/--w-mobile that the
+   rules below prefer over its desktop --x/--y/--w. Keeps the claw,
+   headline text, bunny, penguin, girl, bear and all four social
+   icons — hides the peripheral decoration (cat, flowers, stars) that
+   only made sense as filler around a wide crop.
    ============================================================ */
 @media (max-width: 640px) {
-  /* Narrow/tall viewports: a vw-driven stage width comes out far
-     shorter than the screen, so forcing height:100vh here would just
-     leave a big empty gap above the art. Fall back to natural,
-     aspect-ratio-driven height (flow layout) instead of the
-     viewport-fit + bottom-crop used on larger screens. */
+  /* Same viewport-fill approach as desktop — the hero should still
+     cover most of the screen instead of shrink-wrapping the art. */
   .hero-section {
-    height: auto;
+    height: calc(100vh - var(--nav-height));
   }
 
   .hero-stage {
-    --span-w: 0.82;         /* zoomed-out curated mobile crop */
-    --span-left-frac: 0.177;
-    position: relative;
-    bottom: auto;
-    left: auto;
-    margin-left: calc(-1 * var(--span-left-frac) * var(--stage-w));
+    aspect-ratio: auto;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    left: 0;
+    margin-left: 0;
+  }
+
+  /* --x-mobile/--y-mobile/--w-mobile (set inline per element) take
+     over from the desktop --x/--y/--w now that .hero-stage is sized
+     to the portrait viewport instead of the wide canvas. */
+  .hero-text {
+    left: var(--x-mobile, var(--x));
+    top: var(--y-mobile, var(--y));
+    width: var(--w-mobile, var(--w));
+  }
+
+  .sprite {
+    left: var(--x-mobile, var(--x));
+    top: var(--y-mobile, var(--y));
+    width: var(--w-mobile, var(--w));
+  }
+
+  .hero-icon {
+    left: var(--x-mobile, var(--x));
+    top: var(--y-mobile, var(--y));
+    width: var(--w-mobile, var(--w));
   }
 
   .hero-hide-mobile {
