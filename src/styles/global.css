@@ -681,11 +681,16 @@ body {
   transition: transform 320ms ease, opacity 220ms ease;
 }
 
+/* Inset is relative to the hit region (blindboxX/Y/W/H), not the box art
+   itself — right is wider than left because Compositwin's hit region
+   extends further past its box-front art than Reverielle's does, and
+   this class is shared between both, so it has to satisfy the tighter
+   (Compositwin) edge to stay fully covered by the front layer. */
 .blindbox-details {
   position: absolute;
   top: 30%;
-  left: 10%;
-  right: 8%;
+  left: 14%;
+  right: 20%;
   bottom: 4%;
   opacity: 0;
   overflow: hidden;
@@ -833,7 +838,7 @@ body {
   object-fit: contain;
 }
 
-.carousel-arrow-btn--right img {
+.carousel-arrow-btn--left img {
   transform: scaleX(-1);
 }
 
