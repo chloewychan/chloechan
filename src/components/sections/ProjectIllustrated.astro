@@ -1,0 +1,174 @@
+---
+// Fully hand-drawn project scene: background art, a hover/click "blind box"
+// reveal, link buttons, a photo, and a placeholder-image carousel. Every art
+// layer for a given project shares one 4096x1714 canvas (exported that way
+// from the source file) so they can just stack with inset:0 — see
+// illustrated/BlindBox.astro's comment for how the interactive piece works.
+//
+// The blind box/buttons/photo art is baked pre-positioned into each
+// project's own PNGs (see the blindboxX/Y/W/H content fields), but the
+// title text and the carousel aren't part of any image, so their position
+// is derived here from `carouselPosition`: the carousel takes one half of
+// the canvas, the title sits in the other half where the baked-in art
+// (buttons/photo/blind box) already lives.
+import ExpandingCarousel from './illustrated/ExpandingCarousel.astro';
+import RotatingCarousel from './illustrated/RotatingCarousel.astro';
+import BlindBox from './illustrated/BlindBox.astro';
+
+interface Props {
+  id: string;
+  assetDir: string;
+  label: string;
+  title: string;
+  tagline: string;
+  details: string[];
+  websiteUrl?: string;
+  githubUrl?: string;
+  blindboxAlt: string;
+  blindboxX: number;
+  blindboxY: number;
+  blindboxW: number;
+  blindboxH: number;
+  buttonsX: number;
+  buttonsY: number;
+  buttonsW: number;
+  buttonsH: number;
+  carouselPosition: 'left' | 'right';
+  carouselVariant: 'expand' | 'rotate';
+  carouselImageCount: number;
+  carouselCaption: string[];
+}
+
+const {
+  id,
+  assetDir,
+  label,
+  title,
+  tagline,
+  details,
+  websiteUrl,
+  githubUrl,
+  blindboxAlt,
+  blindboxX,
+  blindboxY,
+  blindboxW,
+  blindboxH,
+  buttonsX,
+  buttonsY,
+  buttonsW,
+  buttonsH,
+  carouselPosition,
+  carouselVariant,
+  carouselImageCount,
+  carouselCaption,
+} = Astro.props;
+
+const base = `/images/projects/${assetDir}`;
+const isCarouselRight = carouselPosition === 'right';
+
+const carouselBox = isCarouselRight
+  ? { left: 55, top: 6, width: 41, height: 60 }
+  : { left: 4, top: 6, width: 41, height: 60 };
+
+const titleBox = isCarouselRight ? { left: 16, top: 2, width: 38 } : { left: 46, top: 2, width: 42 };
+
+const Carousel = carouselVariant === 'rotate' ? RotatingCarousel : ExpandingCarousel;
+
+// The GitHub button sits directly below the website button at a fixed
+// offset/size in both projects' art, so it isn't its own content field.
+const BUTTON2_Y_OFFSET = 8.34;
+---
+
+<section id={id} class="full-page-section illustrated-section flex items-center">
+  <!-- The canvas below is one wide (4096x1714) hand-drawn scene — every
+       layer's position is baked in as a % of that shared canvas, so it
+       doesn't reflow to a narrow screen the way the hero's did (that one
+       has per-element --x-mobile overrides; this one doesn't, because
+       "reposition part of a single flattened illustration" isn't
+       possible). Below the sm breakpoint it's replaced with a plain
+       stacked, text-first version of the same content instead of trying
+       to force the wide composition into a portrait screen. -->
+  <div class="illustrated-mobile sm:hidden max-w-xl mx-auto w-full px-6">
+    <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-2 block">{label}</span>
+    <h2 class="illustrated-title__name mb-3">{title}</h2>
+    <p class="illustrated-title__tagline mb-6">{tagline}</p>
+    <ul class="illustrated-mobile__details mb-6">
+      {details.map((point) => <li>{point}</li>)}
+    </ul>
+    <div class="flex gap-4">
+      {websiteUrl && (
+        <a class="link" href={websiteUrl} target="_blank" rel="noopener">
+          Visit Website →
+        </a>
+      )}
+      {githubUrl && (
+        <a class="link" href={githubUrl} target="_blank" rel="noopener">
+          GitHub Repo →
+        </a>
+      )}
+    </div>
+  </div>
+
+  <div class="illustrated-canvas hidden sm:block">
+    <picture class="illustrated-layer">
+      <source type="image/avif" srcset={`${base}/background.avif`} />
+      <source type="image/webp" srcset={`${base}/background.webp`} />
+      <img src={`${base}/background.png`} alt="" loading="lazy" decoding="async" />
+    </picture>
+
+    <div class="illustrated-title" style={`left:${titleBox.left}%; top:${titleBox.top}%; width:${titleBox.width}%;`}>
+      <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-2 block">{label}</span>
+      <h2 class="illustrated-title__name">{title}</h2>
+      <p class="illustrated-title__tagline">{tagline}</p>
+    </div>
+
+    <BlindBox assetDir={assetDir} alt={blindboxAlt} details={details} x={blindboxX} y={blindboxY} w={blindboxW} h={blindboxH} />
+
+    {websiteUrl && (
+      <a
+        class="illustrated-button"
+        href={websiteUrl}
+        target="_blank"
+        rel="noopener"
+        style={`left:${buttonsX}%; top:${buttonsY}%; width:${buttonsW}%; height:${buttonsH}%;`}
+      >
+        <picture>
+          <source type="image/avif" srcset={`${base}/button1.avif`} />
+          <source type="image/webp" srcset={`${base}/button1.webp`} />
+          <img src={`${base}/button1.png`} alt="" loading="lazy" decoding="async" />
+        </picture>
+        <span class="illustrated-button__label">Visit Website</span>
+      </a>
+    )}
+
+    {githubUrl && (
+      <a
+        class="illustrated-button"
+        href={githubUrl}
+        target="_blank"
+        rel="noopener"
+        style={`left:${buttonsX}%; top:${buttonsY + BUTTON2_Y_OFFSET}%; width:${buttonsW}%; height:${buttonsH}%;`}
+      >
+        <picture>
+          <source type="image/avif" srcset={`${base}/button2.avif`} />
+          <source type="image/webp" srcset={`${base}/button2.webp`} />
+          <img src={`${base}/button2.png`} alt="" loading="lazy" decoding="async" />
+        </picture>
+        <span class="illustrated-button__label">GitHub Repo</span>
+      </a>
+    )}
+
+    <picture class="illustrated-layer">
+      <source type="image/avif" srcset={`${base}/selfie.avif`} />
+      <source type="image/webp" srcset={`${base}/selfie.webp`} />
+      <img src={`${base}/selfie.png`} alt="" loading="lazy" decoding="async" />
+    </picture>
+
+    <div
+      class="illustrated-carousel-slot"
+      style={`left:${carouselBox.left}%; top:${carouselBox.top}%; width:${carouselBox.width}%; height:${carouselBox.height}%;`}
+    >
+      <Carousel count={carouselImageCount} caption={carouselCaption} />
+    </div>
+  </div>
+</section>

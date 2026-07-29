@@ -1,0 +1,60 @@
+---
+// Reverielle-style: every placeholder rectangle keeps its own fixed spot in
+// the row; the arrows just move which single one is "active" (enlarged),
+// wrapping around at both ends.
+interface Props {
+  count: number;
+  caption: string[];
+}
+
+const { count, caption } = Astro.props;
+const items = Array.from({ length: count }, (_, i) => i);
+---
+
+<div class="image-carousel carousel-expand">
+  <button type="button" class="carousel-arrow-btn carousel-arrow-btn--left" aria-label="Show previous image">
+    <img src="/images/general/arrow.png" alt="" />
+  </button>
+
+  <div class="carousel-stage">
+    {items.map((i) => <div class="carousel-rect" data-index={i} />)}
+  </div>
+
+  <button type="button" class="carousel-arrow-btn carousel-arrow-btn--right" aria-label="Show next image">
+    <img src="/images/general/arrow.png" alt="" />
+  </button>
+
+  <p class="carousel-caption">
+    {caption.map((line) => (
+      <span>{line}</span>
+    ))}
+  </p>
+</div>
+
+<script>
+  // Astro dedupes this across every ExpandingCarousel instance on the page.
+  document.querySelectorAll<HTMLElement>('.carousel-expand').forEach((carousel) => {
+    const rects = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-rect'));
+    const prevBtn = carousel.querySelector('.carousel-arrow-btn--left');
+    const nextBtn = carousel.querySelector('.carousel-arrow-btn--right');
+    if (!rects.length) return;
+
+    let active = Math.min(1, rects.length - 1);
+
+    const render = () => {
+      rects.forEach((rect, i) => rect.classList.toggle('active', i === active));
+    };
+
+    prevBtn?.addEventListener('click', () => {
+      active = (active - 1 + rects.length) % rects.length;
+      render();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      active = (active + 1) % rects.length;
+      render();
+    });
+
+    render();
+  });
+</script>

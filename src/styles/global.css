@@ -582,3 +582,305 @@ body {
 .link:hover {
   color: var(--color-brand-hover);
 }
+
+/* ============================================================
+   PROJECT — ILLUSTRATED (Reverielle, Compositwin)
+   ============================================================
+   A fully hand-drawn scene per project. Every art layer (background,
+   blind box states, buttons, photo) is exported as a full 4096x1714
+   canvas with transparency, so they stack with plain inset:0 and line
+   up automatically — the same trick as the hero. Only the interactive
+   pieces (blind box hit region, buttons, carousel) need explicit
+   percentage positioning, supplied per-project from content.
+   ============================================================ */
+.illustrated-section {
+  padding: 4rem 0;
+}
+
+.illustrated-canvas {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  aspect-ratio: 4096 / 1714;
+}
+
+/* Full-canvas decorative art layer (background, photo, blind box states) */
+.illustrated-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.illustrated-layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ─── Blind box ─── */
+.blindbox {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.blindbox-closed,
+.blindbox-open-back,
+.blindbox-open-front {
+  transition: opacity 220ms ease;
+}
+
+.blindbox-closed {
+  opacity: 1;
+  z-index: 1;
+}
+
+.blindbox-open-back {
+  opacity: 0;
+  z-index: 1;
+}
+
+.blindbox-open-front {
+  opacity: 0;
+  z-index: 3;
+}
+
+.blindbox-hit {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.blindbox-hit:hover ~ .blindbox-closed,
+.blindbox-hit.expanded ~ .blindbox-closed {
+  opacity: 0;
+}
+
+.blindbox-hit:hover ~ .blindbox-open-back,
+.blindbox-hit.expanded ~ .blindbox-open-back,
+.blindbox-hit:hover ~ .blindbox-open-front,
+.blindbox-hit.expanded ~ .blindbox-open-front {
+  opacity: 1;
+}
+
+.blindbox-hit.expanded ~ .blindbox-open-back,
+.blindbox-hit.expanded ~ .blindbox-open-front {
+  transform: translateY(22%);
+  transition: transform 320ms ease, opacity 220ms ease;
+}
+
+.blindbox-details {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  right: 8%;
+  bottom: 4%;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 220ms ease;
+  list-style: disc;
+  margin: 0;
+  padding: 0 0 0 1em;
+  text-align: left;
+  font-family: var(--font-hero);
+  font-size: clamp(0.55rem, 1vw, 0.85rem);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.blindbox-details li + li {
+  margin-top: 0.3em;
+}
+
+.blindbox-hit:hover .blindbox-details,
+.blindbox-hit.expanded .blindbox-details {
+  opacity: 1;
+}
+
+/* ─── Title block (label / name / tagline) ─── */
+.illustrated-title {
+  position: absolute;
+}
+
+.illustrated-title__name {
+  font-family: var(--font-hero);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3.2vw, 3rem);
+  color: var(--color-text);
+  margin: 0 0 0.5rem;
+  line-height: 1.05;
+}
+
+.illustrated-title__tagline {
+  font-size: clamp(0.75rem, 1.1vw, 1rem);
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Mobile fallback (below sm) — plain stacked text, no canvas ─── */
+.illustrated-mobile__details {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.6;
+}
+
+.illustrated-mobile__details li + li {
+  margin-top: 0.4em;
+}
+
+/* ─── Link buttons (Visit Website / GitHub Repo) ─── */
+/* The button art (button1/2.png) is just the pill shape, trimmed to size
+   at build time — the label is real text laid on top, not baked into the
+   image, so it stays selectable/accessible/translatable. */
+.illustrated-button {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 150ms ease;
+}
+
+.illustrated-button:hover {
+  transform: scale(1.04);
+}
+
+.illustrated-button__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-hero);
+  font-weight: 600;
+  font-size: clamp(0.6rem, 0.9vw, 0.85rem);
+  color: var(--color-text);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.illustrated-button img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Image placeholder carousels ─── */
+.illustrated-carousel-slot {
+  position: absolute;
+}
+
+.image-carousel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 2%;
+}
+
+.carousel-stage {
+  position: relative;
+  flex: 1;
+  height: 100%;
+}
+
+.carousel-rect {
+  position: absolute;
+  border: 3px solid #b9cbe8;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 6px 16px -6px rgba(60, 80, 130, 0.18);
+}
+
+.carousel-arrow-btn {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8%;
+  aspect-ratio: 1 / 1;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+.carousel-arrow-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.carousel-arrow-btn img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.carousel-arrow-btn--right img {
+  transform: scaleX(-1);
+}
+
+.carousel-caption {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -3.2em;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-hero);
+  font-size: clamp(0.65rem, 1vw, 0.9rem);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/* Expanding variant (Reverielle): each rectangle keeps its own fixed spot;
+   .active just enlarges/highlights whichever one the arrows point to. */
+.carousel-expand .carousel-rect {
+  width: 40%;
+  aspect-ratio: 3 / 4;
+  opacity: 0.7;
+  transform: scale(0.8);
+  z-index: 1;
+  transition: transform 260ms ease, opacity 260ms ease;
+}
+
+.carousel-expand .carousel-rect[data-index='0'] { left: 0%; top: 30%; }
+.carousel-expand .carousel-rect[data-index='1'] { left: 22%; top: 0%; }
+.carousel-expand .carousel-rect[data-index='2'] { left: 44%; top: 14%; }
+.carousel-expand .carousel-rect[data-index='3'] { left: 60%; top: 34%; }
+
+.carousel-expand .carousel-rect.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 5;
+}
+
+/* Rotating variant (Compositwin): rectangles sit in fixed ring slots — slot
+   0 (bottom) is always the enlarged one — and rotate between slots. Assumes
+   4 images; add more [data-slot] rules here if a project ever needs more. */
+.carousel-rotate .carousel-rect {
+  transition: left 320ms ease, top 320ms ease, width 320ms ease, height 320ms ease;
+}
+
+.carousel-rotate .carousel-rect[data-slot='0'] { left: 22%; top: 42%; width: 46%; height: 56%; z-index: 5; }
+.carousel-rotate .carousel-rect[data-slot='1'] { left: 2%; top: 2%; width: 32%; height: 40%; z-index: 2; }
+.carousel-rotate .carousel-rect[data-slot='2'] { left: 58%; top: 0%; width: 28%; height: 36%; z-index: 2; }
+.carousel-rotate .carousel-rect[data-slot='3'] { left: 0%; top: 46%; width: 24%; height: 30%; z-index: 1; }

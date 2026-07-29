@@ -5,6 +5,7 @@ import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import ProjectMediaSide from '../components/sections/ProjectMediaSide.astro';
 import ProjectFullWidth from '../components/sections/ProjectFullWidth.astro';
+import ProjectIllustrated from '../components/sections/ProjectIllustrated.astro';
 import CompanySection from '../components/sections/CompanySection.astro';
 import PortfolioImageGrid from '../components/sections/PortfolioImageGrid.astro';
 import PortfolioTrackList from '../components/sections/PortfolioTrackList.astro';
@@ -32,46 +33,75 @@ type Portfolio = CollectionEntry<'portfolio'>;
   <Hero />
 
   <section id="projects" class="scroll-mt-20">
-    {projects.map((project: Project) =>
-      project.data.layout === 'media-side' ? (
-        <ProjectMediaSide
-          id={`project-${project.id}`}
-          title={project.data.title}
-          tagline={project.data.tagline}
-          role={project.data.role}
-          timeline={project.data.timeline}
-          technologies={project.data.technologies}
-          details={project.data.details}
-          carouselPlaceholder={project.data.carouselPlaceholder}
-          carouselSlides={project.data.carouselSlides}
-          mediaPosition={project.data.mediaPosition ?? 'right'}
-          mediaPlaceholder={project.data.mediaPlaceholder ?? ''}
-        />
-      ) : (
+    {projects.map((project: Project) => {
+      if (project.data.layout === 'illustrated') {
+        return (
+          <ProjectIllustrated
+            id={`project-${project.id}`}
+            assetDir={project.id}
+            label={project.data.label}
+            title={project.data.title}
+            tagline={project.data.tagline}
+            details={project.data.details}
+            websiteUrl={project.data.websiteUrl}
+            githubUrl={project.data.githubUrl}
+            blindboxAlt={project.data.blindboxAlt ?? ''}
+            blindboxX={project.data.blindboxX ?? 0}
+            blindboxY={project.data.blindboxY ?? 0}
+            blindboxW={project.data.blindboxW ?? 0}
+            blindboxH={project.data.blindboxH ?? 0}
+            buttonsX={project.data.buttonsX ?? 0}
+            buttonsY={project.data.buttonsY ?? 0}
+            buttonsW={project.data.buttonsW ?? 0}
+            buttonsH={project.data.buttonsH ?? 0}
+            carouselPosition={project.data.carouselPosition ?? 'right'}
+            carouselVariant={project.data.carouselVariant ?? 'expand'}
+            carouselImageCount={project.data.carouselImageCount ?? 4}
+            carouselCaption={project.data.carouselCaption ?? []}
+          />
+        );
+      }
+
+      if (project.data.layout === 'media-side') {
+        return (
+          <ProjectMediaSide
+            id={`project-${project.id}`}
+            label={project.data.label}
+            title={project.data.title}
+            tagline={project.data.tagline}
+            details={project.data.details}
+            carouselPlaceholder={project.data.carouselPlaceholder ?? ''}
+            carouselSlides={project.data.carouselSlides ?? 1}
+            mediaPosition={project.data.mediaPosition ?? 'right'}
+            mediaPlaceholder={project.data.mediaPlaceholder ?? ''}
+          />
+        );
+      }
+
+      return (
         <ProjectFullWidth
           id={`project-${project.id}`}
+          label={project.data.label}
           title={project.data.title}
           tagline={project.data.tagline}
-          role={project.data.role}
-          timeline={project.data.timeline}
-          technologies={project.data.technologies}
           details={project.data.details}
-          carouselPlaceholder={project.data.carouselPlaceholder}
-          carouselSlides={project.data.carouselSlides}
+          carouselPlaceholder={project.data.carouselPlaceholder ?? ''}
+          carouselSlides={project.data.carouselSlides ?? 1}
         />
-      )
-    )}
+      );
+    })}
   </section>
 
   <section id="companies" class="scroll-mt-20">
     {companies.map((company) => (
       <CompanySection
         id={`company-${company.id}`}
+        label={company.data.label}
         title={company.data.title}
         tagline={company.data.tagline}
         position={company.data.position}
         timeline={company.data.timeline}
-        description={company.data.description}
+        highlights={company.data.highlights}
       />
     ))}
   </section>

@@ -1,0 +1,67 @@
+---
+// Compositwin-style: rectangles sit in fixed ring "slots" (slot 0 at the
+// bottom, always the enlarged one) and the arrows rotate which rectangle
+// occupies which slot — the images move, the slots (and which slot is
+// biggest) don't.
+interface Props {
+  count: number;
+  caption: string[];
+}
+
+const { count, caption } = Astro.props;
+const items = Array.from({ length: count }, (_, i) => i);
+---
+
+<div class="image-carousel carousel-rotate">
+  <button type="button" class="carousel-arrow-btn carousel-arrow-btn--left" aria-label="Rotate counterclockwise">
+    <img src="/images/general/arrow.png" alt="" />
+  </button>
+
+  <div class="carousel-stage">
+    {items.map((i) => <div class="carousel-rect" data-index={i} data-slot={i} />)}
+  </div>
+
+  <button type="button" class="carousel-arrow-btn carousel-arrow-btn--right" aria-label="Rotate clockwise">
+    <img src="/images/general/arrow.png" alt="" />
+  </button>
+
+  <p class="carousel-caption">
+    {caption.map((line) => (
+      <span>{line}</span>
+    ))}
+  </p>
+</div>
+
+<script>
+  // Astro dedupes this across every RotatingCarousel instance on the page.
+  document.querySelectorAll<HTMLElement>('.carousel-rotate').forEach((carousel) => {
+    const rects = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-rect'));
+    const count = rects.length;
+    const prevBtn = carousel.querySelector('.carousel-arrow-btn--left');
+    const nextBtn = carousel.querySelector('.carousel-arrow-btn--right');
+    if (!count) return;
+
+    let offset = 0;
+
+    const render = () => {
+      rects.forEach((rect, i) => {
+        const slot = ((i + offset) % count + count) % count;
+        rect.dataset.slot = String(slot);
+      });
+    };
+
+    // Right arrow = clockwise: the bottom (slot 0) image moves out to the
+    // right as the next one rotates in from the left to take its place.
+    nextBtn?.addEventListener('click', () => {
+      offset = (offset + 1) % count;
+      render();
+    });
+
+    prevBtn?.addEventListener('click', () => {
+      offset = (offset - 1 + count) % count;
+      render();
+    });
+
+    render();
+  });
+</script>

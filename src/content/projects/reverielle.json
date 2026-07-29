@@ -1,14 +1,27 @@
 {
   "title": "Reverielle",
-  "tagline": "A beautiful application that brings imagination to life. Reverielle is designed for creators who want to express themselves through intuitive design.",
+  "tagline": "A mobile application that helps people coordinate their outfits, hair, and makeup to their events, weather, and personality",
   "order": 1,
-  "layout": "media-side",
-  "mediaPosition": "right",
-  "mediaPlaceholder": "iPhone Portrait Image",
-  "role": "Product Designer & Developer",
-  "timeline": "6 months",
-  "technologies": "React, TypeScript, Tailwind CSS",
-  "details": "A comprehensive design and development project focused on creating an intuitive user experience for creative professionals.",
-  "carouselPlaceholder": "iPhone Portrait Placeholder",
-  "carouselSlides": 3
+  "layout": "illustrated",
+  "label": "Work-In-Progress Project",
+  "details": [
+    "Works on iOS and Android",
+    "Built with React Native and TypeScript",
+    "Uses Claude API, Google Calendar API, and Weather API"
+  ],
+  "websiteUrl": "#",
+  "githubUrl": "#",
+  "blindboxAlt": "Bunny",
+  "carouselPosition": "right",
+  "carouselVariant": "expand",
+  "carouselImageCount": 4,
+  "carouselCaption": ["Image description", "Talking about feature and stuff"],
+  "blindboxX": 10.23,
+  "blindboxY": 33.20,
+  "blindboxW": 21.99,
+  "blindboxH": 58.46,
+  "buttonsX": 33.81,
+  "buttonsY": 41.19,
+  "buttonsW": 12.82,
+  "buttonsH": 6.88
 }

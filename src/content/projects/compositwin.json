@@ -1,14 +1,27 @@
 {
   "title": "Compositwin",
-  "tagline": "Compositwin is a mobile-first platform that simplifies complex workflows. Built with modern design principles and responsive functionality.",
+  "tagline": "Links Apple Music and Spotify between friends’ accounts through shared playlists and connected SpotifyJam / SharePlay",
   "order": 2,
-  "layout": "media-side",
-  "mediaPosition": "left",
-  "mediaPlaceholder": "iPhone Portrait Image",
-  "role": "UI/UX Designer",
-  "timeline": "4 months",
-  "technologies": "Figma, Prototyping, User Research",
-  "details": "A mobile application that streamlines creative workflows through intuitive interface design and user-centered development.",
-  "carouselPlaceholder": "iPhone Portrait Placeholder",
-  "carouselSlides": 3
+  "layout": "illustrated",
+  "label": "Work-In-Progress Project",
+  "details": [
+    "Works on iOS and Android",
+    "Built with React Native and TypeScript",
+    "Uses Spotify Web API and MusicKit JS"
+  ],
+  "websiteUrl": "#",
+  "githubUrl": "#",
+  "blindboxAlt": "Penguin",
+  "carouselPosition": "left",
+  "carouselVariant": "rotate",
+  "carouselImageCount": 4,
+  "carouselCaption": ["Image description", "Talking about feature and stuff"],
+  "blindboxX": 69.14,
+  "blindboxY": 29.35,
+  "blindboxW": 23.78,
+  "blindboxH": 62.66,
+  "buttonsX": 54.49,
+  "buttonsY": 41.25,
+  "buttonsW": 12.82,
+  "buttonsH": 6.88
 }

@@ -2,11 +2,14 @@
   "title": "Video Game",
   "tagline": "An immersive gaming experience designed with cutting-edge graphics and engaging gameplay mechanics.",
   "order": 3,
+  "hidden": true,
   "layout": "full-width",
-  "role": "Game Developer & Designer",
-  "timeline": "10 months",
-  "technologies": "Unity, C#, 3D Design",
-  "details": "A full-featured game with immersive storytelling, sophisticated game mechanics, and stunning visuals.",
+  "details": [
+    "Role: Game Developer & Designer",
+    "Timeline: 10 months",
+    "Technologies: Unity, C#, 3D Design",
+    "A full-featured game with immersive storytelling, sophisticated game mechanics, and stunning visuals."
+  ],
   "carouselPlaceholder": "Landscape Desktop Placeholder",
   "carouselSlides": 5
 }

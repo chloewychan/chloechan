@@ -1,0 +1,65 @@
+---
+// Closed by default. Hovering swaps in the open-box art with the details
+// list sandwiched between its back and front layers — the front layer's own
+// transparency is what makes the text look like it's "poking out" above the
+// box, no manual clipping needed. Clicking toggles a persistent "expanded"
+// state that slides the box down, uncovering the rest of the text; clicking
+// again (or hovering away while still closed) reverts it.
+//
+// DOM order here is [hit region, closed, open-back, open-front] so the
+// `.blindbox-hit:hover ~ .layer` sibling selectors below can reach every
+// layer (the general sibling combinator only matches later siblings) —
+// visual stacking is controlled by z-index instead, independent of DOM order.
+interface Props {
+  assetDir: string; // e.g. "reverielle" -> /images/projects/reverielle/
+  alt: string;
+  details: string[];
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+const { assetDir, alt, details, x, y, w, h } = Astro.props;
+const base = `/images/projects/${assetDir}`;
+---
+
+<div class="blindbox">
+  <button
+    type="button"
+    class="blindbox-hit"
+    style={`left:${x}%; top:${y}%; width:${w}%; height:${h}%;`}
+    aria-label={`${alt} blind box — click to reveal project details`}
+  >
+    <ul class="blindbox-details">
+      {details.map((point) => <li>{point}</li>)}
+    </ul>
+  </button>
+
+  <picture class="illustrated-layer blindbox-closed">
+    <source type="image/avif" srcset={`${base}/blindbox-closed.avif`} />
+    <source type="image/webp" srcset={`${base}/blindbox-closed.webp`} />
+    <img src={`${base}/blindbox-closed.png`} alt={`${alt} blind box, closed`} loading="lazy" decoding="async" />
+  </picture>
+
+  <picture class="illustrated-layer blindbox-open-back">
+    <source type="image/avif" srcset={`${base}/blindbox-open-back.avif`} />
+    <source type="image/webp" srcset={`${base}/blindbox-open-back.webp`} />
+    <img src={`${base}/blindbox-open-back.png`} alt="" loading="lazy" decoding="async" />
+  </picture>
+
+  <picture class="illustrated-layer blindbox-open-front">
+    <source type="image/avif" srcset={`${base}/blindbox-open-front.avif`} />
+    <source type="image/webp" srcset={`${base}/blindbox-open-front.webp`} />
+    <img src={`${base}/blindbox-open-front.png`} alt="" loading="lazy" decoding="async" />
+  </picture>
+</div>
+
+<script>
+  // Astro dedupes this across every BlindBox instance on the page.
+  document.querySelectorAll<HTMLButtonElement>('.blindbox-hit').forEach((hit) => {
+    hit.addEventListener('click', () => {
+      hit.classList.toggle('expanded');
+    });
+  });
+</script>
