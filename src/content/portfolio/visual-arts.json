@@ -2,6 +2,7 @@
   "title": "Visual Arts",
   "tagline": "A collection of digital and traditional artwork exploring color, form, and emotion.",
   "order": 2,
+  "hidden": true,
   "layout": "image-grid",
   "imageCount": 3,
   "imagePlaceholder": "Portfolio Image"

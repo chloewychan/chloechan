@@ -2,6 +2,7 @@
   "title": "Music",
   "tagline": "Original compositions and music production showcasing diverse genres and creative expression.",
   "order": 5,
+  "hidden": true,
   "layout": "track-list",
   "tracks": [
     { "title": "Track Title", "meta": "Genre • 3:45" },

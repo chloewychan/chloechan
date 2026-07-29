@@ -2,6 +2,7 @@
   "title": "Acrobatics & Contortion",
   "tagline": "Explore the art of movement and flexibility through carefully curated acrobatic and contortion photography.",
   "order": 1,
+  "hidden": true,
   "layout": "image-grid",
   "imageCount": 3,
   "imagePlaceholder": "Portfolio Image"

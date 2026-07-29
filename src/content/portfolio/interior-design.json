@@ -2,6 +2,7 @@
   "title": "Interior Design",
   "tagline": "Thoughtfully designed interior spaces that blend functionality with aesthetic beauty.",
   "order": 4,
+  "hidden": true,
   "layout": "image-grid",
   "imageCount": 3,
   "imagePlaceholder": "Portfolio Image"

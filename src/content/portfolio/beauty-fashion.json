@@ -2,6 +2,7 @@
   "title": "Beauty & Fashion",
   "tagline": "High-fashion and beauty photography showcasing creativity, style, and confidence.",
   "order": 3,
+  "hidden": true,
   "layout": "image-grid",
   "imageCount": 3,
   "imagePlaceholder": "Portfolio Image"
