@@ -125,3 +125,93 @@ const base = `/images/projects/${assetDir}`;
     </div>
   </div>
 </section>
+
+<script>
+  // ─── PHOTO STRIP SCROLL-PIN ───
+  // Each `.company-illustrated-section` is a tall wrapper; `.company-
+  // illustrated-pin` sticks to the top of the viewport (position: sticky)
+  // while the wrapper's extra height is scrolled through, and
+  // `.photostrip-img` translates up inside its own clipped
+  // `.photostrip-window` in lockstep — giving the effect of the whole
+  // section holding still while just the strip scrolls. This is native
+  // scroll physics (sticky positioning + reading scrollY), not a
+  // wheel/touch preventDefault scroll-lock, which breaks trackpad
+  // momentum, keyboard scrolling, and touch, and needs fragile manual
+  // re-dispatching of "pass-through" scroll once done.
+  //
+  // Skipped entirely under prefers-reduced-motion (no extra scroll
+  // height reserved, no forced motion) — see the
+  // `@media (prefers-reduced-motion: reduce)` override in global.css,
+  // which instead makes `.photostrip-window` a normal scrollable box so
+  // the rest of the strip is still reachable.
+  //
+  // Also naturally a no-op below the `sm` breakpoint: `.company-
+  // illustrated-pin` is `hidden` there (Tailwind), so `pin.offsetParent`
+  // is `null` and `measure()` skips reserving any extra scroll height —
+  // matching the plain stacked-text mobile fallback, which needs the
+  // section to be its normal (untalled) height.
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('.company-illustrated-section'));
+
+  if (sections.length && !prefersReducedMotion) {
+    const navEl = document.querySelector<HTMLElement>('header');
+    const navHeight = navEl ? navEl.getBoundingClientRect().height : 0;
+
+    interface PinnedStrip {
+      section: HTMLElement;
+      stripImg: HTMLElement;
+      sectionTop: number; // document-relative top, cached at measure time
+      extraScroll: number;
+    }
+
+    let strips: PinnedStrip[] = [];
+
+    const measure = () => {
+      strips = [];
+      sections.forEach((section) => {
+        const pin = section.querySelector<HTMLElement>('.company-illustrated-pin');
+        const stripImg = section.querySelector<HTMLElement>('.photostrip-img');
+
+        section.style.removeProperty('height');
+        stripImg?.style.removeProperty('transform');
+
+        if (!pin || !stripImg || pin.offsetParent === null) return;
+
+        const pinHeight = pin.getBoundingClientRect().height;
+        const stripHeight = stripImg.getBoundingClientRect().height;
+        const extraScroll = Math.max(0, stripHeight - pinHeight);
+        if (extraScroll === 0) return;
+
+        section.style.height = `calc(100vh + ${extraScroll}px)`;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        strips.push({ section, stripImg, sectionTop, extraScroll });
+      });
+    };
+
+    const applyScroll = () => {
+      strips.forEach(({ stripImg, sectionTop, extraScroll }) => {
+        const progress = Math.min(1, Math.max(0, (window.scrollY + navHeight - sectionTop) / extraScroll));
+        stripImg.style.transform = `translateY(${(-progress * extraScroll).toFixed(1)}px)`;
+      });
+    };
+
+    let rafId: number | null = null;
+    const scheduleScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        applyScroll();
+      });
+    };
+
+    measure();
+    applyScroll();
+
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      measure();
+      applyScroll();
+    });
+  }
+</script>

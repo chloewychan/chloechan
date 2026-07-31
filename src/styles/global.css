@@ -1255,6 +1255,17 @@ body {
   height: auto;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .photostrip-window {
+    overflow-y: auto;
+  }
+
+  .photostrip-img {
+    position: static !important;
+    transform: none !important;
+  }
+}
+
 /* ─── Mobile fallback (below sm) ─── */
 .company-illustrated-mobile__details p {
   margin: 0 0 0.5em;
