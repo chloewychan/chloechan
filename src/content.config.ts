@@ -107,6 +107,13 @@ const companies = defineCollection({
     // Rendered in order, cycling through that company's
     // button1/button2/button3 art.
     links: z.array(z.object({ label: z.string(), url: z.string() })).optional(),
+    // Whether this company's capsulemachine.png art has its dispenser
+    // slot on the left instead of the right (Sewciety's is drawn
+    // mirrored from ChloeFriendly's) — flips which side CapsuleMachine
+    // positions the capsule sprite/panel on. Not derived from
+    // photostripPosition since it's a property of the art itself, not
+    // the layout side.
+    capsuleMirrored: z.boolean().default(false),
   }),
 });
 

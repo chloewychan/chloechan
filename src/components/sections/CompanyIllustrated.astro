@@ -30,6 +30,7 @@ interface Props {
   photostripPosition: 'left' | 'right';
   logoAlt: string;
   links: LinkItem[];
+  capsuleMirrored: boolean;
 }
 
 const {
@@ -44,6 +45,7 @@ const {
   photostripPosition,
   logoAlt,
   links,
+  capsuleMirrored,
 } = Astro.props;
 
 const base = `/images/projects/${assetDir}`;
@@ -118,7 +120,7 @@ const base = `/images/projects/${assetDir}`;
       </div>
 
       <div class="company-illustrated-capsule-slot">
-        <CapsuleMachine assetDir={assetDir} companyName={title} position={position} timeline={timeline} highlights={highlights} />
+        <CapsuleMachine assetDir={assetDir} companyName={title} position={position} timeline={timeline} highlights={highlights} mirrored={capsuleMirrored} />
       </div>
 
       {photostripPosition === 'right' && <PhotoStrip assetDir={assetDir} />}
@@ -171,24 +173,30 @@ const base = `/images/projects/${assetDir}`;
       strips = [];
       sections.forEach((section) => {
         const pin = section.querySelector<HTMLElement>('.company-illustrated-pin');
+        const stripWindow = section.querySelector<HTMLElement>('.photostrip-window');
         const stripImg = section.querySelector<HTMLElement>('.photostrip-img');
 
         section.style.removeProperty('height');
         stripImg?.style.removeProperty('transform');
 
-        if (!pin || !stripImg || pin.offsetParent === null) return;
+        if (!pin || !stripWindow || !stripImg || pin.offsetParent === null) return;
 
-        const pinHeight = pin.getBoundingClientRect().height;
+        // Compare against the *window's* height, not the pin's — the
+        // window is a fixed-size card (sized to show ~1.25 photos), not
+        // the full pin height, so how much the strip needs to scroll
+        // through is relative to its own small viewport, not the section.
+        const windowHeight = stripWindow.getBoundingClientRect().height;
         const stripHeight = stripImg.getBoundingClientRect().height;
-        const extraScroll = Math.max(0, stripHeight - pinHeight);
+        const extraScroll = Math.max(0, stripHeight - windowHeight);
         if (extraScroll === 0) return;
 
-        // Must match `.company-illustrated-pin`'s own
-        // `calc(100vh - var(--nav-height))` height plus the extra scroll,
-        // or the sticky element has `extraScroll + navHeight` of slack
-        // while the progress math below only divides by `extraScroll` —
-        // i.e. the strip finishes early and the tail of every pin is dead
-        // scrolling with nothing moving.
+        // The pin's own resting height (calc(100vh - var(--nav-height)))
+        // plus however much extra the strip needs to scroll through —
+        // matching `.company-illustrated-pin`'s own height formula, or
+        // the sticky element has `extraScroll + navHeight` of slack while
+        // the progress math below only divides by `extraScroll`, i.e. the
+        // strip finishes early and the tail of every pin is dead scrolling
+        // with nothing moving.
         section.style.height = `calc(100vh - var(--nav-height) + ${extraScroll}px)`;
         const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         strips.push({ section, stripImg, sectionTop, extraScroll });

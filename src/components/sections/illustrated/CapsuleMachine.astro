@@ -24,15 +24,23 @@ interface Props {
   position: string;
   timeline: string;
   highlights: string[];
+  // true when this company's capsulemachine.png has its dispenser slot
+  // drawn on the left instead of the right (Sewciety's art is mirrored
+  // from ChloeFriendly's) — see the `.capsule-machine--mirrored` override
+  // in global.css for the actual repositioning.
+  mirrored?: boolean;
 }
 
-const { assetDir, companyName, position, timeline, highlights } = Astro.props;
+const { assetDir, companyName, position, timeline, highlights, mirrored = false } = Astro.props;
 const base = `/images/projects/${assetDir}`;
 const variant = wiggleVariant(`capsule-${assetDir}`);
 const wiggleStyle = `--inertia-kick:${variant.kick}; --inertia-friction:${variant.friction}; --inertia-max:${variant.max}; --bob-dur:${variant.bobDur}s; --bob-delay:${variant.bobDelay}s;`;
 ---
 
-<div class={`capsule-machine wiggle-sprite hover-expand ${variant.bobClass}`} style={wiggleStyle}>
+<div
+  class={`capsule-machine wiggle-sprite hover-expand ${variant.bobClass} ${mirrored ? 'capsule-machine--mirrored' : ''}`}
+  style={wiggleStyle}
+>
   <picture class="capsule-machine__body">
     <source type="image/avif" srcset={`${base}/capsulemachine.avif`} />
     <source type="image/webp" srcset={`${base}/capsulemachine.webp`} />

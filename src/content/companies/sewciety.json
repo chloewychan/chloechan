@@ -8,6 +8,7 @@
   "layout": "illustrated-capsule",
   "assetDir": "sewciety",
   "photostripPosition": "left",
+  "capsuleMirrored": true,
   "logoAlt": "UW Sewciety duck-with-needle mascot",
   "links": [
     { "label": "Visit Website", "url": "#" },

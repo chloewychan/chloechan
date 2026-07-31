@@ -108,6 +108,7 @@ type Portfolio = CollectionEntry<'portfolio'>;
           photostripPosition={company.data.photostripPosition ?? 'right'}
           logoAlt={company.data.logoAlt ?? `${company.data.title} logo`}
           links={company.data.links ?? []}
+          capsuleMirrored={company.data.capsuleMirrored}
         />
       ) : (
         <CompanySection

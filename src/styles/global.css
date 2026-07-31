@@ -1128,6 +1128,21 @@ body {
   margin-top: 0.25em;
 }
 
+/* `.capsule-machine--mirrored` (Sewciety): its capsulemachine.png art is
+   drawn with the dispenser slot on the LEFT instead of the right, so the
+   resting capsule-sized bbox mirrors horizontally (62% -> 100-62-22 =
+   16%) while top/width/height stay the same. Higher specificity (2
+   classes) than the base `.capsule-hit`/`.capsule-sprite`/`.capsule-panel`
+   rules (1 class) so it wins without needing `!important`; the panel's
+   own `.expanded` rule (3 classes) still wins over this for the expanded
+   state, which stays unmirrored since the dome it grows into is roughly
+   centered in both companies' art. */
+.capsule-machine--mirrored .capsule-hit,
+.capsule-machine--mirrored .capsule-sprite,
+.capsule-machine--mirrored .capsule-panel {
+  left: 16%;
+}
+
 .company-illustrated-pin {
   position: sticky;
   top: var(--nav-height);
@@ -1146,7 +1161,16 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* `contain`, not `cover` — matches the illustrated projects'
+     `.illustrated-layer img` (they can use either interchangeably since
+     `.illustrated-canvas` is forced to the background's own 4096x1714
+     aspect-ratio, so there's nothing to letterbox or crop). This section's
+     `.company-illustrated-pin` is viewport-height-relative instead (needed
+     for the scroll-pin), so its aspect ratio doesn't match the image's —
+     `cover` was cropping/zooming the wash unpredictably; `contain` always
+     shows the whole background at its true proportions, letterboxed
+     instead of cropped. */
+  object-fit: contain;
 }
 
 .company-illustrated-row {
@@ -1157,9 +1181,19 @@ body {
   padding: 0 4%;
 }
 
+/* Positioned near the top and width-capped, not vertically centered and
+   full-width — matches the illustrated *projects'* title convention
+   (ProjectIllustrated.astro's `titleBox`, e.g. Reverielle's
+   `{top:2, width:38}`), which this row-based layout doesn't inherit
+   automatically the way the button/carousel bboxes do. `align-self`
+   overrides the row's own `align-items:center` for this one column only —
+   the capsule/photostrip columns stay vertically centered. */
 .company-illustrated-main {
   flex: 1 1 auto;
   min-width: 0;
+  max-width: 28rem;
+  align-self: flex-start;
+  padding-top: clamp(1.5rem, 6%, 3rem);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -1237,54 +1271,51 @@ body {
 }
 
 /* ─── Photo strip (scroll-pinned — see CompanyIllustrated.astro's
-   <script> for how .photostrip-img's transform is driven) ─── */
+   <script> for how .photostrip-img's transform is driven) ───
+   The window is a fixed, viewport-independent landscape card — NOT full
+   pin height — sized so roughly one and a quarter photos show at once:
+   each photostrip.png is 3 stacked photos, each ~23-26% of the strip's
+   total height, and the strip itself is ~0.42 wide-per-unit-tall. Given
+   the window is `width`-driven with the strip filling 100% of it (no
+   horizontal cropping — the full width is always visible), the height
+   that shows "1.25 photos" works out to roughly 0.73x the window's own
+   width — see the `aspect-ratio` below. To retune the "how many photos
+   visible" feel, adjust that ratio; to retune the strip's own size on
+   the page, adjust `.photostrip-column`'s width instead. */
 .photostrip-column {
-  flex: 0 0 clamp(10rem, 24%, 22rem);
-  height: 100%;
-  position: relative;
+  flex: 0 0 clamp(11rem, 20%, 18rem);
 }
 
 .photostrip-window {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 100 / 73;
   overflow: hidden;
   border-radius: var(--radius-card);
 }
 
-/* Height is CSS-driven (a fixed multiple of the pin's own height), NOT
-   derived from the loaded image's natural aspect ratio — otherwise the
-   box measures 0px tall until the image loads and the scroll-pin's
-   measure() disables itself on a real (uncached) page load. Sizing by
-   height also guarantees the strip is always 30% taller than the pin, so
-   there is always scroll range to reveal, at every viewport size.
-   Width follows from the art's own aspect ratio and will generally
-   exceed the (narrow) column, so the strip is centered and clipped using
-   the standalone `translate` property — deliberately NOT `transform`,
-   which the scroll-pin script owns (`transform: translateY(...)`). Same
-   separation-of-concerns split the wiggle sprites use. */
+/* `aspect-ratio` (not `height: auto` derived from the loaded image) so
+   the box has a definite height immediately, before the image itself has
+   loaded — otherwise it measures 0px tall and the scroll-pin's measure()
+   disables itself on a real (uncached) page load. This is ChloeFriendly's
+   exact photostrip.png ratio (1714x4096); Sewciety's is ~0.4202 vs this
+   ~0.4185 — close enough (~0.4%) that sharing one approximate value for
+   both is fine, and `.photostrip-window`'s `overflow:hidden` clips any
+   sub-pixel difference regardless. */
 .photostrip-img {
   position: absolute;
-  left: 50%;
+  left: 0;
   top: 0;
-  height: calc((100vh - var(--nav-height)) * 1.3);
-  /* `<picture>` with `left: 50%` + `width: auto` isn't treated as a
-     definite replaced element, so without an explicit aspect-ratio it
-     falls into the CSS shrink-to-fit sizing algorithm and collapses to
-     half the containing block's width instead of following the image's
-     intrinsic ratio. This ratio is ChloeFriendly's exact photostrip.png
-     ratio (1714x4096); Sewciety's is ~0.4202 vs this ~0.4185 — close
-     enough (~0.4%) that sharing one approximate value for both is fine. */
+  width: 100%;
   aspect-ratio: 1714 / 4096;
-  width: auto;
-  translate: -50% 0;
   display: block;
   will-change: transform;
 }
 
 .photostrip-img img {
   display: block;
-  height: 100%;
-  width: auto;
+  width: 100%;
+  height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1295,18 +1326,6 @@ body {
   .photostrip-img {
     position: static !important;
     transform: none !important;
-  }
-
-  /* The -50% centering above only makes sense paired with `left: 50%` on
-     an absolutely-positioned strip; it would shove the static (in-flow)
-     strip half its own width off to the left here, so reset it.
-     This has to live in its own rule with its own selector: put
-     `translate: none` next to the `transform: none` above and
-     lightningcss folds the pair into a single `transform: translate(0,0)`
-     at build time, dropping the `translate` reset entirely and letting
-     the base rule's -50% leak back through. Verified in dist output. */
-  .photostrip-column .photostrip-img {
-    translate: none !important;
   }
 }
 
