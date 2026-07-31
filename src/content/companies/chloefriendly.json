@@ -10,5 +10,13 @@
     "Received 200+ five-star review ratings",
     "Gained 10,000+ followers across all social media accounts",
     "Generated $10,000+ in revenue"
+  ],
+  "layout": "illustrated-capsule",
+  "assetDir": "chloefriendly",
+  "photostripPosition": "right",
+  "logoAlt": "ChloeFriendly bunny mascot holding a crochet hook",
+  "links": [
+    { "label": "Etsy Shop", "url": "#" },
+    { "label": "Instagram", "url": "#" }
   ]
 }

@@ -84,6 +84,29 @@ const companies = defineCollection({
     // Extra bullet points below Position/Timeline — optional, for things
     // like sales figures or follower counts that not every entry has.
     highlights: z.array(z.string()).default([]),
+
+    // 'illustrated-capsule': fully custom hand-drawn scene — background
+    // wash, a hover/click "capsule machine" reveal showing this same
+    // position/timeline/highlights data, link buttons, a photo, and a
+    // scroll-pinned photo strip (ChloeFriendly, Sewciety). Unlike
+    // projects' 'illustrated' layout, this art isn't one shared canvas —
+    // see CompanyIllustrated.astro for why it's laid out with flexbox
+    // instead of page-wide x/y/w/h percentages.
+    layout: z.enum(['illustrated-capsule']).optional(),
+    // art lives in assets/<assetDir>-source/, optimized into
+    // public/images/projects/<assetDir>/ by the existing generic
+    // optimize-images.mjs pipeline (no script changes needed)
+    assetDir: z.string().optional(),
+    // which side the photo strip sits on; the capsule machine always
+    // takes the opposite side, title/links sit in the middle
+    photostripPosition: z.enum(['left', 'right']).optional(),
+    logoAlt: z.string().optional(),
+    // link buttons — a flexible list instead of named
+    // websiteUrl/etsyUrl/githubUrl/instagramUrl fields, since the two
+    // companies already have different counts/kinds (2 vs 3) of links.
+    // Rendered in order, cycling through that company's
+    // button1/button2/button3 art.
+    links: z.array(z.object({ label: z.string(), url: z.string() })).optional(),
   }),
 });
 

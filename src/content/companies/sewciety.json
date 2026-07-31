@@ -4,5 +4,14 @@
   "order": 3,
   "label": "University of Waterloo Club",
   "position": "Co-president",
-  "timeline": "September 2025 - Present"
+  "timeline": "September 2025 - Present",
+  "layout": "illustrated-capsule",
+  "assetDir": "sewciety",
+  "photostripPosition": "left",
+  "logoAlt": "UW Sewciety duck-with-needle mascot",
+  "links": [
+    { "label": "Visit Website", "url": "#" },
+    { "label": "Github Repo", "url": "#" },
+    { "label": "Instagram", "url": "#" }
+  ]
 }
