@@ -15,7 +15,12 @@
   "carouselPosition": "left",
   "carouselVariant": "rotate",
   "carouselImageCount": 4,
-  "carouselCaption": ["Images coming soon!"],
+  "carouselCaption": [
+    "Shared playlist sync — coming soon!",
+    "SpotifyJam integration — coming soon!",
+    "SharePlay integration — coming soon!",
+    "Friend connections — coming soon!"
+  ],
   "blindboxX": 69.14,
   "blindboxY": 29.35,
   "blindboxW": 23.78,

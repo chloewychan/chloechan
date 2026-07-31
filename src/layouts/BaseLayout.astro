@@ -82,3 +82,188 @@ const { title = 'Chloe Chan' } = Astro.props;
     }
   });
 </script>
+
+<script>
+  // ─── WIGGLE SPRITES: shared scroll-inertia + cursor-magnet engine ──
+  // Any element marked `.wiggle-sprite` anywhere on the site (hero
+  // characters/icons, project blind boxes, selfies, carousel placeholder
+  // images, and anything added later) gets this same physics: fast
+  // scrolling nudges it, then it eases back to rest instead of snapping
+  // ("lag" rather than tracking scroll 1:1), and it's pulled toward the
+  // mouse when nearby, easing back to 0 as the cursor moves away. Both
+  // effects combine into one offset per frame applied through the
+  // standalone `translate` CSS property, which stays independent of
+  // `transform` (driven by each element's own bob-* keyframe animation,
+  // and in some cases a static centering/scale transform too) — see
+  // global.css's "WIGGLE SPRITES" section for the full class contract.
+  //
+  // --inertia-kick/--inertia-friction/--inertia-max/--magnet-strength are
+  // read per-element (falling back to defaults) so new sprites can get
+  // their own personality — src/lib/wiggleSprite.ts generates a set of
+  // these deterministically from any seed string, so nobody has to
+  // hand-tune numbers for every new instance.
+  //
+  // Cursor-magnet distance is measured against a sub-rect of the element
+  // (--sprite-x/--sprite-y/--sprite-w/--sprite-h, % of the element's own
+  // box, defaulting to the whole thing) rather than the element's full
+  // bounding box. This matters for anything drawn as one oversized,
+  // mostly-transparent canvas layer (the illustrated projects' blind box)
+  // — its DOM box is the whole canvas, which doesn't reflect where the
+  // actual character sits, so without this every full-canvas sprite in a
+  // section would measure distance from the same point and appear to
+  // move in lockstep. Hero's sprites/icons are already sized to match
+  // their art exactly, so they don't need to set these (the 0/0/100/100
+  // default is a no-op for them).
+  //
+  // --magnet-axis-x:0 confines the magnet pull (not the scroll-inertia
+  // offset, which is already vertical-only for every sprite) to vertical
+  // movement only — paired with a bob-v* idle-drift class for a sprite
+  // that should only ever move up and down (the blind box).
+  //
+  // Runs only while something still has noticeable motion left, so it
+  // doesn't sit in an idle rAF loop the rest of the time — the "always
+  // moving" feel comes from the bob-* CSS animation, which keeps running
+  // on its own regardless.
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wiggleEls = Array.from(document.querySelectorAll<HTMLElement>('.wiggle-sprite'));
+
+  if (wiggleEls.length && !prefersReducedMotion) {
+    const MAGNET_RADIUS = 220; // px — cursor distance at which pull starts
+    const MAGNET_EASE = 0.15; // per-frame chase toward the target pull
+
+    const readVar = (el: HTMLElement, name: string, fallback: number): number => {
+      const value = parseFloat(getComputedStyle(el).getPropertyValue(name));
+      return Number.isFinite(value) ? value : fallback;
+    };
+
+    interface WiggleSprite {
+      el: HTMLElement;
+      magnetStrength: number;
+      magnetAxisX: number;
+      kick: number;
+      friction: number;
+      maxOffset: number;
+      spriteX: number;
+      spriteY: number;
+      spriteW: number;
+      spriteH: number;
+      scrollOffset: number;
+      magnetX: number;
+      magnetY: number;
+      targetMagnetX: number;
+      targetMagnetY: number;
+    }
+
+    const sprites: WiggleSprite[] = wiggleEls.map((el) => ({
+      el,
+      magnetStrength: readVar(el, '--magnet-strength', 18),
+      magnetAxisX: readVar(el, '--magnet-axis-x', 1),
+      kick: readVar(el, '--inertia-kick', 0.25),
+      friction: readVar(el, '--inertia-friction', 0.85),
+      maxOffset: readVar(el, '--inertia-max', 20),
+      spriteX: readVar(el, '--sprite-x', 0),
+      spriteY: readVar(el, '--sprite-y', 0),
+      spriteW: readVar(el, '--sprite-w', 100),
+      spriteH: readVar(el, '--sprite-h', 100),
+      scrollOffset: 0,
+      magnetX: 0,
+      magnetY: 0,
+      targetMagnetX: 0,
+      targetMagnetY: 0,
+    }));
+
+    let lastScrollY = window.scrollY;
+    let mouseX = 0;
+    let mouseY = 0;
+    let hasMouse = false;
+    let rafId: number | null = null;
+
+    const scheduleStep = () => {
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    const step = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+
+      let stillActive = false;
+
+      sprites.forEach((s) => {
+        s.scrollOffset += scrollDelta * s.kick;
+        s.scrollOffset = Math.max(-s.maxOffset, Math.min(s.maxOffset, s.scrollOffset));
+        s.scrollOffset *= s.friction;
+
+        if (hasMouse) {
+          const fullRect = s.el.getBoundingClientRect();
+          const subWidth = fullRect.width * (s.spriteW / 100);
+          const subHeight = fullRect.height * (s.spriteH / 100);
+          const subCenterX = fullRect.left + fullRect.width * (s.spriteX / 100) + subWidth / 2;
+          const subCenterY = fullRect.top + fullRect.height * (s.spriteY / 100) + subHeight / 2;
+          const dx = mouseX - subCenterX;
+          const dy = mouseY - subCenterY;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist > 0.01 && dist < MAGNET_RADIUS) {
+            const pull = (1 - dist / MAGNET_RADIUS) * s.magnetStrength;
+            s.targetMagnetX = (dx / dist) * pull * s.magnetAxisX;
+            s.targetMagnetY = (dy / dist) * pull;
+          } else {
+            s.targetMagnetX = 0;
+            s.targetMagnetY = 0;
+          }
+        } else {
+          s.targetMagnetX = 0;
+          s.targetMagnetY = 0;
+        }
+
+        s.magnetX += (s.targetMagnetX - s.magnetX) * MAGNET_EASE;
+        s.magnetY += (s.targetMagnetY - s.magnetY) * MAGNET_EASE;
+
+        const totalX = s.magnetX;
+        const totalY = s.scrollOffset + s.magnetY;
+
+        const settled =
+          Math.abs(s.scrollOffset) < 0.05 &&
+          Math.abs(scrollDelta) < 0.5 &&
+          Math.abs(s.magnetX) < 0.05 &&
+          Math.abs(s.magnetY) < 0.05 &&
+          Math.abs(s.targetMagnetX) < 0.05 &&
+          Math.abs(s.targetMagnetY) < 0.05;
+
+        if (settled) {
+          s.el.style.removeProperty('translate');
+        } else {
+          s.el.style.setProperty('translate', `${totalX.toFixed(2)}px ${totalY.toFixed(2)}px`);
+          stillActive = true;
+        }
+      });
+
+      rafId = stillActive ? window.requestAnimationFrame(step) : null;
+    };
+
+    window.addEventListener('scroll', scheduleStep, { passive: true });
+
+    window.addEventListener(
+      'mousemove',
+      (e: MouseEvent) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        hasMouse = true;
+        scheduleStep();
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      'mouseleave',
+      () => {
+        hasMouse = false;
+        scheduleStep();
+      },
+      { passive: true }
+    );
+  }
+</script>

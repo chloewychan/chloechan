@@ -186,17 +186,15 @@ body {
   inset: 0;
 }
 
-/* Generic decorative/character sprite, positioned by % of the stage.
-   will-change targets `translate` (script.ts's per-sprite scroll
-   inertia), which is separate from the `transform` property driven by
-   this element's own bob-* keyframe animation. */
+/* Hero-specific positioning only — the shared wiggle-sprite behavior
+   (scroll inertia + cursor magnet) lives on the `.wiggle-sprite` marker
+   class below, added alongside this one. */
 .sprite {
   position: absolute;
   left: var(--x);
   top: var(--y);
   width: var(--w);
   z-index: 1;
-  will-change: translate;
 }
 
 .sprite img {
@@ -265,7 +263,6 @@ body {
   transform: translate(-50%, -50%);
   z-index: 2;
   display: block;
-  will-change: translate;
 }
 
 /* Bobbing lives on this inner wrapper instead of .hero-icon itself,
@@ -316,10 +313,34 @@ body {
 }
 
 /* ============================================================
-   BOBBING — transform-only, staggered duration/delay per element,
-   several drift paths so movement isn't uniformly vertical.
+   WIGGLE SPRITES — shared contract for any element that should move
+   like the hero's characters: continuous idle drift + scroll inertia +
+   cursor magnet. The engine (BaseLayout.astro's script) queries
+   `.wiggle-sprite` document-wide, so a new sprite anywhere on the site
+   just needs this class (plus one of the bob-* classes below for the
+   idle drift). --inertia-kick/--inertia-friction/--inertia-max/
+   --magnet-strength are optional per-element tuning read by that
+   script; sensible defaults apply if omitted (see wiggleVariant() in
+   src/lib/wiggleSprite.ts for a way to generate them automatically).
+   Set --magnet-axis-x:0 to confine the cursor-magnet pull to vertical
+   only (paired with one of the bob-v* classes below for matching idle
+   drift) — used by the illustrated projects' blind box.
+   will-change targets `translate`, which is deliberately a separate
+   CSS property from `transform` (driven by the bob-* keyframes below,
+   and in some cases a static centering/scale transform too) so the two
+   compose instead of fighting over the same property.
    ============================================================ */
-.bob-a, .bob-b, .bob-c, .bob-d, .bob-e {
+.wiggle-sprite {
+  will-change: translate;
+}
+
+/* ============================================================
+   BOBBING — transform-only, staggered duration/delay per element,
+   several drift paths so movement isn't uniformly vertical. bob-v1/
+   bob-v2 are the vertical-only pair, for sprites paired with
+   --magnet-axis-x:0 above.
+   ============================================================ */
+.bob-a, .bob-b, .bob-c, .bob-d, .bob-e, .bob-v1, .bob-v2 {
   animation-duration: var(--bob-dur, 6s);
   animation-delay: var(--bob-delay, 0s);
   animation-timing-function: ease-in-out;
@@ -331,6 +352,8 @@ body {
 .bob-c { animation-name: bob-c; }
 .bob-d { animation-name: bob-d; }
 .bob-e { animation-name: bob-e; }
+.bob-v1 { animation-name: bob-v1; }
+.bob-v2 { animation-name: bob-v2; }
 
 @keyframes bob-a {
   0%, 100% { transform: translate(0, 0); }
@@ -360,8 +383,18 @@ body {
   100% { transform: translate(0, 0); }
 }
 
+@keyframes bob-v1 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0, -6%); }
+}
+
+@keyframes bob-v2 {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0, 5%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bob-a, .bob-b, .bob-c, .bob-d, .bob-e {
+  .bob-a, .bob-b, .bob-c, .bob-d, .bob-e, .bob-v1, .bob-v2 {
     animation: none;
   }
 }
@@ -748,6 +781,30 @@ body {
   margin-top: 0.4em;
 }
 
+/* ─── Hover-expand ───
+   Shared "grows slightly on hover/focus" affordance, reused by every
+   clickable piece of art (link buttons, carousel arrows, carousel
+   placeholder images) instead of each one having its own bespoke rule.
+   Sets --hover-scale as the input; most consumers just feed that
+   straight into their own `scale` (the default rule below does that),
+   but anything that already has its own base `scale` for something else
+   (the expanding carousel's active/inactive sizing) instead combines the
+   two via calc() in its own more specific rule — see
+   `.carousel-expand .carousel-rect` below for that pattern. Uses the
+   standalone `scale` property rather than `transform: scale()` so it
+   composes safely with elements that already own `transform` for
+   something else (a wiggle-sprite's bob-* keyframe animation). */
+.hover-expand {
+  --hover-scale: 1;
+  scale: var(--hover-scale);
+  transition: scale 150ms ease;
+}
+
+.hover-expand:hover,
+.hover-expand:focus-visible {
+  --hover-scale: 1.06;
+}
+
 /* ─── Link buttons (Visit Website / GitHub Repo) ─── */
 /* The button art (button1/2.png) is just the pill shape, trimmed to size
    at build time — the label is real text laid on top, not baked into the
@@ -758,11 +815,6 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: transform 150ms ease;
-}
-
-.illustrated-button:hover {
-  transform: scale(1.04);
 }
 
 .illustrated-button__label {
@@ -803,12 +855,25 @@ body {
   height: 100%;
 }
 
+/* A <button>, not a <div> — clicking an image selects it (see the
+   carousel scripts below), same as the arrows do. Reset to a plain box
+   since buttons carry their own default padding/font/appearance. */
 .carousel-rect {
   position: absolute;
+  display: block;
+  margin: 0;
+  padding: 0;
+  font: inherit;
   border: 3px solid #b9cbe8;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.55);
   box-shadow: 0 6px 16px -6px rgba(60, 80, 130, 0.18);
+  cursor: pointer;
+}
+
+.carousel-rect:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 3px;
 }
 
 .carousel-arrow-btn {
@@ -823,12 +888,11 @@ body {
   padding: 0;
   cursor: pointer;
   opacity: 0.8;
-  transition: opacity 150ms ease, transform 150ms ease;
+  transition: opacity 150ms ease, scale 150ms ease;
 }
 
 .carousel-arrow-btn:hover {
   opacity: 1;
-  transform: scale(1.1);
 }
 
 .carousel-arrow-btn img {
@@ -842,29 +906,52 @@ body {
   transform: scaleX(-1);
 }
 
+/* One caption per placeholder image, crossfaded to show only whichever
+   one is currently selected. All items sit in the same grid cell
+   (grid-template-areas trick) so the container's height comes from the
+   tallest caption instead of collapsing to 0 when the others are
+   opacity:0 — a plain absolute-stack would need a hardcoded min-height
+   for the same reason. */
 .carousel-caption {
   position: absolute;
   left: 8%;
   right: 8%;
   bottom: -3.2em;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: grid;
   font-family: var(--font-hero);
   font-size: clamp(0.65rem, 1vw, 0.9rem);
   color: var(--color-muted);
   text-align: center;
 }
 
+.carousel-caption__item {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.carousel-caption__item.active {
+  opacity: 1;
+}
+
 /* Expanding variant (Reverielle): each rectangle keeps its own fixed spot;
-   .active just enlarges/highlights whichever one the arrows point to. */
+   .active just enlarges/highlights whichever one the arrows point to.
+   Uses the standalone `scale` property (combined with --hover-scale from
+   `.hover-expand`, see below) rather than `transform: scale()` since
+   these rects are also wiggle sprites — `transform` is already owned by
+   their bob-* keyframe animation. --carousel-base-scale and --hover-scale
+   are separate custom properties (not one self-referencing one) so the
+   active-state scale and the hover-state scale can combine via calc()
+   without a circular definition. */
 .carousel-expand .carousel-rect {
+  --carousel-base-scale: 0.8;
   width: 40%;
   aspect-ratio: 3 / 4;
   opacity: 0.7;
-  transform: scale(0.8);
+  scale: calc(var(--carousel-base-scale) * var(--hover-scale, 1));
   z-index: 1;
-  transition: transform 260ms ease, opacity 260ms ease;
+  transition: scale 260ms ease, opacity 260ms ease;
 }
 
 .carousel-expand .carousel-rect[data-index='0'] { left: 0%; top: 30%; }
@@ -873,16 +960,19 @@ body {
 .carousel-expand .carousel-rect[data-index='3'] { left: 60%; top: 34%; }
 
 .carousel-expand .carousel-rect.active {
+  --carousel-base-scale: 1;
   opacity: 1;
-  transform: scale(1);
   z-index: 5;
 }
 
 /* Rotating variant (Compositwin): rectangles sit in fixed ring slots — slot
    0 (bottom) is always the enlarged one — and rotate between slots. Assumes
-   4 images; add more [data-slot] rules here if a project ever needs more. */
+   4 images; add more [data-slot] rules here if a project ever needs more.
+   scale here is just the hover bump (--hover-scale from `.hover-expand`) —
+   no separate base state to combine with, unlike the expanding variant. */
 .carousel-rotate .carousel-rect {
-  transition: left 320ms ease, top 320ms ease, width 320ms ease, height 320ms ease;
+  scale: var(--hover-scale, 1);
+  transition: left 320ms ease, top 320ms ease, width 320ms ease, height 320ms ease, scale 150ms ease;
 }
 
 .carousel-rotate .carousel-rect[data-slot='0'] { left: 22%; top: 42%; width: 46%; height: 56%; z-index: 5; }

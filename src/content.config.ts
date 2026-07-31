@@ -49,6 +49,9 @@ const projects = defineCollection({
     // 'rotate': arrows rotate the stack; the bottom slot stays enlarged
     carouselVariant: z.enum(['expand', 'rotate']).optional(),
     carouselImageCount: z.number().optional(),
+    // One caption per placeholder image (index-aligned with
+    // carouselImageCount) — the carousel shows only the caption for
+    // whichever image is currently active/selected, not all of them at once.
     carouselCaption: z.array(z.string()).optional(),
     // Blind box hit/hover region as a % box (x, y, width, height) on the
     // shared 4096x1714 canvas — matches where this project's hand-drawn

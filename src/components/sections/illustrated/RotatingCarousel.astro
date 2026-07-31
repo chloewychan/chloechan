@@ -2,14 +2,22 @@
 // Compositwin-style: rectangles sit in fixed ring "slots" (slot 0 at the
 // bottom, always the enlarged one) and the arrows rotate which rectangle
 // occupies which slot — the images move, the slots (and which slot is
-// biggest) don't.
+// biggest) don't. Clicking an image rotates it straight into slot 0 —
+// an alternative to the arrows, not a replacement.
+import { wiggleVariant } from '../../../lib/wiggleSprite';
+
 interface Props {
   count: number;
-  caption: string[];
+  caption: string[]; // one caption per image, shown when that image is in slot 0
+  seed?: string; // gives each project's placeholder images their own wiggle personality
 }
 
-const { count, caption } = Astro.props;
+const { count, caption, seed = 'carousel' } = Astro.props;
 const items = Array.from({ length: count }, (_, i) => i);
+// Each placeholder image is a wiggle sprite and grows on hover, like the
+// rest of the site's clickable art; the arrows that control them are not,
+// so they stay put and easy to click.
+const variants = items.map((i) => wiggleVariant(`${seed}-carousel-${i}`));
 ---
 
 <div class="image-carousel carousel-rotate">
@@ -18,7 +26,20 @@ const items = Array.from({ length: count }, (_, i) => i);
   </button>
 
   <div class="carousel-stage">
-    {items.map((i) => <div class="carousel-rect" data-index={i} data-slot={i} />)}
+    {items.map((i) => {
+      const v = variants[i];
+      const style = `--inertia-kick:${v.kick}; --inertia-friction:${v.friction}; --inertia-max:${v.max}; --bob-dur:${v.bobDur}s; --bob-delay:${v.bobDelay}s;`;
+      return (
+        <button
+          type="button"
+          class={`carousel-rect wiggle-sprite hover-expand ${v.bobClass}`}
+          style={style}
+          data-index={i}
+          data-slot={i}
+          aria-label={`Show image ${i + 1}`}
+        />
+      );
+    })}
   </div>
 
   <button type="button" class="carousel-arrow-btn carousel-arrow-btn--right" aria-label="Rotate clockwise">
@@ -26,8 +47,10 @@ const items = Array.from({ length: count }, (_, i) => i);
   </button>
 
   <p class="carousel-caption">
-    {caption.map((line) => (
-      <span>{line}</span>
+    {items.map((i) => (
+      <span class="carousel-caption__item" data-index={i}>
+        {caption[i] ?? ''}
+      </span>
     ))}
   </p>
 </div>
@@ -35,7 +58,8 @@ const items = Array.from({ length: count }, (_, i) => i);
 <script>
   // Astro dedupes this across every RotatingCarousel instance on the page.
   document.querySelectorAll<HTMLElement>('.carousel-rotate').forEach((carousel) => {
-    const rects = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-rect'));
+    const rects = Array.from(carousel.querySelectorAll<HTMLButtonElement>('.carousel-rect'));
+    const captionItems = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-caption__item'));
     const count = rects.length;
     const prevBtn = carousel.querySelector('.carousel-arrow-btn--left');
     const nextBtn = carousel.querySelector('.carousel-arrow-btn--right');
@@ -48,6 +72,16 @@ const items = Array.from({ length: count }, (_, i) => i);
         const slot = ((i + offset) % count + count) % count;
         rect.dataset.slot = String(slot);
       });
+      // Slot 0 is always the enlarged/selected one; find which original
+      // image index currently maps there (inverse of the slot formula
+      // above) so its caption is the one shown.
+      const activeIndex = ((-offset % count) + count) % count;
+      captionItems.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+    };
+
+    const rotateTo = (index: number) => {
+      offset = ((-index % count) + count) % count;
+      render();
     };
 
     // Right arrow = clockwise: the bottom (slot 0) image moves out to the
@@ -61,6 +95,8 @@ const items = Array.from({ length: count }, (_, i) => i);
       offset = (offset - 1 + count) % count;
       render();
     });
+
+    rects.forEach((rect, i) => rect.addEventListener('click', () => rotateTo(i)));
 
     render();
   });

@@ -14,6 +14,7 @@
 import ExpandingCarousel from './illustrated/ExpandingCarousel.astro';
 import RotatingCarousel from './illustrated/RotatingCarousel.astro';
 import BlindBox from './illustrated/BlindBox.astro';
+import { spriteBounds } from '../../lib/spriteBounds';
 
 interface Props {
   id: string;
@@ -77,6 +78,18 @@ const Carousel = carouselVariant === 'rotate' ? RotatingCarousel : ExpandingCaro
 // The GitHub button sits directly below the website button at a fixed
 // offset/size in both projects' art, so it isn't its own content field.
 const BUTTON2_Y_OFFSET = 8.34;
+
+// The selfie is still (not a wiggle sprite) but does grow slightly on
+// hover/focus like the rest of the site's clickable art. It's a
+// full-canvas overlay though — mostly transparent, person drawn
+// somewhere inside — and normally has pointer-events:none (see
+// .illustrated-layer) so it doesn't intercept clicks meant for the
+// buttons/blind box underneath. Turning pointer-events on for the whole
+// box would break that, so it's clipped to just the measured art bounds
+// first: only that region is hoverable, and transform-origin is set to
+// its center so the scale grows from the person, not the canvas corner.
+const selfieBounds = await spriteBounds(`${base}/selfie.png`);
+const selfieHoverStyle = `pointer-events:auto; clip-path: inset(${selfieBounds.y}% ${100 - selfieBounds.x - selfieBounds.w}% ${100 - selfieBounds.y - selfieBounds.h}% ${selfieBounds.x}%); transform-origin: ${selfieBounds.x + selfieBounds.w / 2}% ${selfieBounds.y + selfieBounds.h / 2}%;`;
 ---
 
 <section id={id} class="full-page-section illustrated-section flex items-center">
@@ -126,7 +139,7 @@ const BUTTON2_Y_OFFSET = 8.34;
 
     {websiteUrl && (
       <a
-        class="illustrated-button"
+        class="illustrated-button hover-expand"
         href={websiteUrl}
         target="_blank"
         rel="noopener"
@@ -143,7 +156,7 @@ const BUTTON2_Y_OFFSET = 8.34;
 
     {githubUrl && (
       <a
-        class="illustrated-button"
+        class="illustrated-button hover-expand"
         href={githubUrl}
         target="_blank"
         rel="noopener"
@@ -158,7 +171,7 @@ const BUTTON2_Y_OFFSET = 8.34;
       </a>
     )}
 
-    <picture class="illustrated-layer illustrated-sprite">
+    <picture class="illustrated-layer hover-expand" style={selfieHoverStyle}>
       <source type="image/avif" srcset={`${base}/selfie.avif`} />
       <source type="image/webp" srcset={`${base}/selfie.webp`} />
       <img src={`${base}/selfie.png`} alt="" loading="lazy" decoding="async" />
@@ -168,135 +181,7 @@ const BUTTON2_Y_OFFSET = 8.34;
       class="illustrated-carousel-slot"
       style={`left:${carouselBox.left}%; top:${carouselBox.top}%; width:${carouselBox.width}%; height:${carouselBox.height}%;`}
     >
-      <Carousel count={carouselImageCount} caption={carouselCaption} />
+      <Carousel count={carouselImageCount} caption={carouselCaption} seed={assetDir} />
     </div>
   </div>
 </section>
-
-<script>
-  // ─── ILLUSTRATED SPRITES: same scroll-inertia + cursor-magnet feel as
-  // the hero's sprites (see Hero.astro), just toned down — these live in
-  // a content section rather than a full-viewport stage. Only the blind
-  // box character and the selfie illustration move; the background layer
-  // and the title/tagline text stay put, mirroring hero-bg/hero-text.
-  // Astro dedupes this across every ProjectIllustrated instance on the page.
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const spriteEls = Array.from(document.querySelectorAll<HTMLElement>('.illustrated-sprite'));
-
-  if (spriteEls.length && !prefersReducedMotion) {
-    const MAGNET_RADIUS = 180; // px — cursor distance at which pull starts
-    const MAGNET_STRENGTH = 10; // px — max pull, right under the cursor
-    const MAGNET_EASE = 0.15; // per-frame chase toward the target pull
-    const KICK = 0.14; // scroll-delta -> offset
-    const FRICTION = 0.88; // per-frame decay back to rest
-    const MAX_OFFSET = 12; // px — clamp on scroll-inertia offset
-
-    interface InertiaSprite {
-      el: HTMLElement;
-      scrollOffset: number;
-      magnetX: number;
-      magnetY: number;
-      targetMagnetX: number;
-      targetMagnetY: number;
-    }
-
-    const sprites: InertiaSprite[] = spriteEls.map((el) => ({
-      el,
-      scrollOffset: 0,
-      magnetX: 0,
-      magnetY: 0,
-      targetMagnetX: 0,
-      targetMagnetY: 0,
-    }));
-
-    let lastScrollY = window.scrollY;
-    let mouseX = 0;
-    let mouseY = 0;
-    let hasMouse = false;
-    let rafId: number | null = null;
-
-    const scheduleStep = () => {
-      if (rafId === null) {
-        rafId = window.requestAnimationFrame(step);
-      }
-    };
-
-    const step = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
-      lastScrollY = currentScrollY;
-
-      let stillActive = false;
-
-      sprites.forEach((s) => {
-        s.scrollOffset += scrollDelta * KICK;
-        s.scrollOffset = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, s.scrollOffset));
-        s.scrollOffset *= FRICTION;
-
-        const rect = s.el.getBoundingClientRect();
-        if (hasMouse) {
-          const dx = mouseX - (rect.left + rect.width / 2);
-          const dy = mouseY - (rect.top + rect.height / 2);
-          const dist = Math.hypot(dx, dy);
-
-          if (dist > 0.01 && dist < MAGNET_RADIUS) {
-            const pull = (1 - dist / MAGNET_RADIUS) * MAGNET_STRENGTH;
-            s.targetMagnetX = (dx / dist) * pull;
-            s.targetMagnetY = (dy / dist) * pull;
-          } else {
-            s.targetMagnetX = 0;
-            s.targetMagnetY = 0;
-          }
-        } else {
-          s.targetMagnetX = 0;
-          s.targetMagnetY = 0;
-        }
-
-        s.magnetX += (s.targetMagnetX - s.magnetX) * MAGNET_EASE;
-        s.magnetY += (s.targetMagnetY - s.magnetY) * MAGNET_EASE;
-
-        const totalX = s.magnetX;
-        const totalY = s.scrollOffset + s.magnetY;
-
-        const settled =
-          Math.abs(s.scrollOffset) < 0.05 &&
-          Math.abs(scrollDelta) < 0.5 &&
-          Math.abs(s.magnetX) < 0.05 &&
-          Math.abs(s.magnetY) < 0.05 &&
-          Math.abs(s.targetMagnetX) < 0.05 &&
-          Math.abs(s.targetMagnetY) < 0.05;
-
-        if (settled) {
-          s.el.style.removeProperty('translate');
-        } else {
-          s.el.style.setProperty('translate', `${totalX.toFixed(2)}px ${totalY.toFixed(2)}px`);
-          stillActive = true;
-        }
-      });
-
-      rafId = stillActive ? window.requestAnimationFrame(step) : null;
-    };
-
-    window.addEventListener('scroll', scheduleStep, { passive: true });
-
-    window.addEventListener(
-      'mousemove',
-      (e: MouseEvent) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        hasMouse = true;
-        scheduleStep();
-      },
-      { passive: true }
-    );
-
-    window.addEventListener(
-      'mouseleave',
-      () => {
-        hasMouse = false;
-        scheduleStep();
-      },
-      { passive: true }
-    );
-  }
-</script>

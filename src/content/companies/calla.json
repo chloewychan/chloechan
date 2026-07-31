@@ -2,6 +2,7 @@
   "title": "Calla Curve",
   "tagline": "Combines 3D printing and electronic hardware to build innovative home decorations, accessories, and functional things in a cute and coquette aesthetic",
   "order": 2,
+  "hidden": true,
   "label": "Startup Company",
   "position": "Co-founder",
   "timeline": "June 2026 - Present"

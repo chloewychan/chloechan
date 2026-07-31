@@ -1,14 +1,22 @@
 ---
 // Reverielle-style: every placeholder rectangle keeps its own fixed spot in
 // the row; the arrows just move which single one is "active" (enlarged),
-// wrapping around at both ends.
+// wrapping around at both ends. Clicking an image selects it directly —
+// an alternative to the arrows, not a replacement.
+import { wiggleVariant } from '../../../lib/wiggleSprite';
+
 interface Props {
   count: number;
-  caption: string[];
+  caption: string[]; // one caption per image, shown when that image is active
+  seed?: string; // gives each project's placeholder images their own wiggle personality
 }
 
-const { count, caption } = Astro.props;
+const { count, caption, seed = 'carousel' } = Astro.props;
 const items = Array.from({ length: count }, (_, i) => i);
+// Each placeholder image is a wiggle sprite and grows on hover, like the
+// rest of the site's clickable art; the arrows that control them are not,
+// so they stay put and easy to click.
+const variants = items.map((i) => wiggleVariant(`${seed}-carousel-${i}`));
 ---
 
 <div class="image-carousel carousel-expand">
@@ -17,7 +25,19 @@ const items = Array.from({ length: count }, (_, i) => i);
   </button>
 
   <div class="carousel-stage">
-    {items.map((i) => <div class="carousel-rect" data-index={i} />)}
+    {items.map((i) => {
+      const v = variants[i];
+      const style = `--inertia-kick:${v.kick}; --inertia-friction:${v.friction}; --inertia-max:${v.max}; --bob-dur:${v.bobDur}s; --bob-delay:${v.bobDelay}s;`;
+      return (
+        <button
+          type="button"
+          class={`carousel-rect wiggle-sprite hover-expand ${v.bobClass}`}
+          style={style}
+          data-index={i}
+          aria-label={`Show image ${i + 1}`}
+        />
+      );
+    })}
   </div>
 
   <button type="button" class="carousel-arrow-btn carousel-arrow-btn--right" aria-label="Show next image">
@@ -25,8 +45,10 @@ const items = Array.from({ length: count }, (_, i) => i);
   </button>
 
   <p class="carousel-caption">
-    {caption.map((line) => (
-      <span>{line}</span>
+    {items.map((i) => (
+      <span class="carousel-caption__item" data-index={i}>
+        {caption[i] ?? ''}
+      </span>
     ))}
   </p>
 </div>
@@ -34,7 +56,8 @@ const items = Array.from({ length: count }, (_, i) => i);
 <script>
   // Astro dedupes this across every ExpandingCarousel instance on the page.
   document.querySelectorAll<HTMLElement>('.carousel-expand').forEach((carousel) => {
-    const rects = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-rect'));
+    const rects = Array.from(carousel.querySelectorAll<HTMLButtonElement>('.carousel-rect'));
+    const captionItems = Array.from(carousel.querySelectorAll<HTMLElement>('.carousel-caption__item'));
     const prevBtn = carousel.querySelector('.carousel-arrow-btn--left');
     const nextBtn = carousel.querySelector('.carousel-arrow-btn--right');
     if (!rects.length) return;
@@ -43,17 +66,17 @@ const items = Array.from({ length: count }, (_, i) => i);
 
     const render = () => {
       rects.forEach((rect, i) => rect.classList.toggle('active', i === active));
+      captionItems.forEach((el, i) => el.classList.toggle('active', i === active));
     };
 
-    prevBtn?.addEventListener('click', () => {
-      active = (active - 1 + rects.length) % rects.length;
+    const select = (index: number) => {
+      active = index;
       render();
-    });
+    };
 
-    nextBtn?.addEventListener('click', () => {
-      active = (active + 1) % rects.length;
-      render();
-    });
+    prevBtn?.addEventListener('click', () => select((active - 1 + rects.length) % rects.length));
+    nextBtn?.addEventListener('click', () => select((active + 1) % rects.length));
+    rects.forEach((rect, i) => rect.addEventListener('click', () => select(i)));
 
     render();
   });

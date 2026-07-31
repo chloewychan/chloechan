@@ -10,6 +10,8 @@
 // `.blindbox-hit:hover ~ .layer` sibling selectors below can reach every
 // layer (the general sibling combinator only matches later siblings) —
 // visual stacking is controlled by z-index instead, independent of DOM order.
+import { wiggleVariant } from '../../../lib/wiggleSprite';
+
 interface Props {
   assetDir: string; // e.g. "reverielle" -> /images/projects/reverielle/
   alt: string;
@@ -22,9 +24,20 @@ interface Props {
 
 const { assetDir, alt, details, x, y, w, h } = Astro.props;
 const base = `/images/projects/${assetDir}`;
+// The blind box is a wiggle sprite (moves like the hero's characters) —
+// seeded on assetDir so each project's box gets its own personality
+// without hand-tuning. Constrained to vertical-only motion (a bob-v*
+// class + --magnet-axis-x:0), so it only ever bobs/pulls up and down.
+// --sprite-x/y/w/h reuse the same x/y/w/h as the hit region: the
+// `.blindbox` wrapper is a full-canvas overlay, so its own bounding box
+// doesn't reflect where the box art actually sits — without these,
+// cursor-magnet distance would be measured from the canvas center
+// instead of the box itself.
+const variant = wiggleVariant(`blindbox-${assetDir}`, 'vertical');
+const wiggleStyle = `--inertia-kick:${variant.kick}; --inertia-friction:${variant.friction}; --inertia-max:${variant.max}; --bob-dur:${variant.bobDur}s; --bob-delay:${variant.bobDelay}s; --sprite-x:${x}%; --sprite-y:${y}%; --sprite-w:${w}%; --sprite-h:${h}%; --magnet-axis-x:0;`;
 ---
 
-<div class="blindbox illustrated-sprite">
+<div class={`blindbox wiggle-sprite ${variant.bobClass}`} style={wiggleStyle}>
   <button
     type="button"
     class="blindbox-hit"

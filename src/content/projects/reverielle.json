@@ -15,7 +15,12 @@
   "carouselPosition": "right",
   "carouselVariant": "expand",
   "carouselImageCount": 4,
-  "carouselCaption": ["Images coming soon!"],
+  "carouselCaption": [
+    "Outfit planner — coming soon!",
+    "Weather-matched suggestions — coming soon!",
+    "Calendar sync — coming soon!",
+    "Hair & makeup looks — coming soon!"
+  ],
   "blindboxX": 10.23,
   "blindboxY": 33.20,
   "blindboxW": 21.99,
