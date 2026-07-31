@@ -1267,6 +1267,14 @@ body {
   left: 50%;
   top: 0;
   height: calc((100vh - var(--nav-height)) * 1.3);
+  /* `<picture>` with `left: 50%` + `width: auto` isn't treated as a
+     definite replaced element, so without an explicit aspect-ratio it
+     falls into the CSS shrink-to-fit sizing algorithm and collapses to
+     half the containing block's width instead of following the image's
+     intrinsic ratio. This ratio is ChloeFriendly's exact photostrip.png
+     ratio (1714x4096); Sewciety's is ~0.4202 vs this ~0.4185 — close
+     enough (~0.4%) that sharing one approximate value for both is fine. */
+  aspect-ratio: 1714 / 4096;
   width: auto;
   translate: -50% 0;
   display: block;
