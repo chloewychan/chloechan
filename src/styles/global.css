@@ -1060,12 +1060,17 @@ body {
   z-index: 1;
 }
 
+/* `:focus-visible` mirrors `:hover` so keyboard users get the same
+   crossfade preview before committing to Enter/Space — same pairing as
+   .hero-icon's social icons above. */
 .capsule-hit:hover ~ .capsule-sprite--closed,
+.capsule-hit:focus-visible ~ .capsule-sprite--closed,
 .capsule-hit.expanded ~ .capsule-sprite--closed {
   opacity: 0;
 }
 
 .capsule-hit:hover ~ .capsule-sprite--open,
+.capsule-hit:focus-visible ~ .capsule-sprite--open,
 .capsule-hit.expanded ~ .capsule-sprite--open {
   opacity: 1;
 }
@@ -1094,12 +1099,18 @@ body {
   color: var(--color-text);
 }
 
+/* `overflow-y: auto` only in the expanded state — the resting/collapsed
+   rule above keeps `overflow: hidden` so nothing spills out of the
+   capsule-sized box while it grows or shrinks. The panel is a fixed
+   percentage height, but `highlights` is an arbitrary-length array, so
+   long lists scroll instead of being silently clipped. */
 .capsule-hit.expanded ~ .capsule-panel {
   left: 8%;
   top: 6%;
   width: 84%;
   height: 56%;
   opacity: 1;
+  overflow-y: auto;
   pointer-events: auto;
 }
 
@@ -1292,6 +1303,21 @@ body {
 }
 
 /* ─── Mobile fallback (below sm) ─── */
+
+/* Every sibling section (CompanySection, ProjectIllustrated) carries
+   `full-page-section` for its framing, but this one can't: that class
+   sets `display`, which would fight both the sticky-pin height math on
+   desktop and the Tailwind `hidden`/`sm:` utilities on the children.
+   So the same framing is applied here, scoped to the mobile fallback. */
+@media (max-width: 640px) {
+  .company-illustrated-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 0;
+  }
+}
+
 .company-illustrated-mobile__details p {
   margin: 0 0 0.5em;
 }
