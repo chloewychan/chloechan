@@ -7,6 +7,7 @@ import ProjectMediaSide from '../components/sections/ProjectMediaSide.astro';
 import ProjectFullWidth from '../components/sections/ProjectFullWidth.astro';
 import ProjectIllustrated from '../components/sections/ProjectIllustrated.astro';
 import CompanySection from '../components/sections/CompanySection.astro';
+import CompanyIllustrated from '../components/sections/CompanyIllustrated.astro';
 import PortfolioImageGrid from '../components/sections/PortfolioImageGrid.astro';
 import PortfolioTrackList from '../components/sections/PortfolioTrackList.astro';
 
@@ -93,17 +94,33 @@ type Portfolio = CollectionEntry<'portfolio'>;
   </section>
 
   <section id="companies" class="scroll-mt-20">
-    {companies.map((company) => (
-      <CompanySection
-        id={`company-${company.id}`}
-        label={company.data.label}
-        title={company.data.title}
-        tagline={company.data.tagline}
-        position={company.data.position}
-        timeline={company.data.timeline}
-        highlights={company.data.highlights}
-      />
-    ))}
+    {companies.map((company) =>
+      company.data.layout === 'illustrated-capsule' ? (
+        <CompanyIllustrated
+          id={`company-${company.id}`}
+          assetDir={company.data.assetDir ?? company.id}
+          label={company.data.label}
+          title={company.data.title}
+          tagline={company.data.tagline}
+          position={company.data.position}
+          timeline={company.data.timeline}
+          highlights={company.data.highlights}
+          photostripPosition={company.data.photostripPosition ?? 'right'}
+          logoAlt={company.data.logoAlt ?? `${company.data.title} logo`}
+          links={company.data.links ?? []}
+        />
+      ) : (
+        <CompanySection
+          id={`company-${company.id}`}
+          label={company.data.label}
+          title={company.data.title}
+          tagline={company.data.tagline}
+          position={company.data.position}
+          timeline={company.data.timeline}
+          highlights={company.data.highlights}
+        />
+      )
+    )}
   </section>
 
   <section id="portfolio" class="scroll-mt-20">

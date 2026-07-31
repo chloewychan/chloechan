@@ -1,0 +1,127 @@
+---
+// Illustrated company section (ChloeFriendly, Sewciety): background
+// wash, a hover/click capsule-machine reveal, link buttons, a decorative
+// photo, and a scroll-pinned photo strip. See the "COMPANY — ILLUSTRATED
+// CAPSULE" section of global.css for why this uses flexbox instead of
+// the illustrated projects' fixed-canvas-percentage approach — these
+// companies' art is a set of independently-cropped sprites, not one
+// shared pre-composed canvas.
+//
+// Below `sm`, falls back to plain stacked text — same convention as
+// ProjectIllustrated.astro's `.illustrated-mobile` — no capsule game, no
+// photo-strip scroll-pin on mobile.
+import CapsuleMachine from './illustrated/CapsuleMachine.astro';
+import PhotoStrip from './illustrated/PhotoStrip.astro';
+
+interface LinkItem {
+  label: string;
+  url: string;
+}
+
+interface Props {
+  id: string;
+  assetDir: string;
+  label: string;
+  title: string;
+  tagline: string;
+  position: string;
+  timeline: string;
+  highlights: string[];
+  photostripPosition: 'left' | 'right';
+  logoAlt: string;
+  links: LinkItem[];
+}
+
+const {
+  id,
+  assetDir,
+  label,
+  title,
+  tagline,
+  position,
+  timeline,
+  highlights,
+  photostripPosition,
+  logoAlt,
+  links,
+} = Astro.props;
+
+const base = `/images/projects/${assetDir}`;
+---
+
+<section id={id} class="company-illustrated-section">
+  <div class="company-illustrated-mobile sm:hidden max-w-xl mx-auto w-full px-6">
+    <span class="text-sm tracking-widest uppercase text-[var(--color-brand)] mb-2 block">{label}</span>
+    <h2 class="illustrated-title__name mb-3">{title}</h2>
+    <p class="illustrated-title__tagline mb-6">{tagline}</p>
+    <div class="company-illustrated-mobile__details mb-6">
+      <p><strong>Position:</strong> {position}</p>
+      <p><strong>Timeline:</strong> {timeline}</p>
+      {highlights.length > 0 && (
+        <ul>
+          {highlights.map((point) => <li>{point}</li>)}
+        </ul>
+      )}
+    </div>
+    <div class="flex gap-4 flex-wrap">
+      {links.map((link) => (
+        <a class="link" href={link.url} target="_blank" rel="noopener">
+          {link.label} →
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="company-illustrated-pin hidden sm:block">
+    <picture class="company-illustrated-bg">
+      <source type="image/avif" srcset={`${base}/background.avif`} />
+      <source type="image/webp" srcset={`${base}/background.webp`} />
+      <img src={`${base}/background.png`} alt="" loading="lazy" decoding="async" />
+    </picture>
+
+    <div class="company-illustrated-row">
+      {photostripPosition === 'left' && <PhotoStrip assetDir={assetDir} />}
+
+      <div class="company-illustrated-main">
+        <div class="company-illustrated-header">
+          <picture class="company-illustrated-logo">
+            <source type="image/avif" srcset={`${base}/logo.avif`} />
+            <source type="image/webp" srcset={`${base}/logo.webp`} />
+            <img src={`${base}/logo.png`} alt={logoAlt} loading="lazy" decoding="async" />
+          </picture>
+          <div>
+            <span class="section-label block mb-2">{label}</span>
+            <h2 class="illustrated-title__name">{title}</h2>
+          </div>
+        </div>
+
+        <p class="illustrated-title__tagline">{tagline}</p>
+
+        <div class="company-illustrated-links">
+          {links.map((link, i) => (
+            <a class="company-link-button hover-expand" href={link.url} target="_blank" rel="noopener">
+              <picture>
+                <source type="image/avif" srcset={`${base}/button${(i % 3) + 1}.avif`} />
+                <source type="image/webp" srcset={`${base}/button${(i % 3) + 1}.webp`} />
+                <img src={`${base}/button${(i % 3) + 1}.png`} alt="" loading="lazy" decoding="async" />
+              </picture>
+              <span class="company-link-button__label">{link.label}</span>
+            </a>
+          ))}
+        </div>
+
+        <picture class="company-illustrated-selfie hover-expand">
+          <source type="image/avif" srcset={`${base}/selfie.avif`} />
+          <source type="image/webp" srcset={`${base}/selfie.webp`} />
+          <img src={`${base}/selfie.png`} alt="" loading="lazy" decoding="async" />
+        </picture>
+      </div>
+
+      <div class="company-illustrated-capsule-slot">
+        <CapsuleMachine assetDir={assetDir} companyName={title} position={position} timeline={timeline} highlights={highlights} />
+      </div>
+
+      {photostripPosition === 'right' && <PhotoStrip assetDir={assetDir} />}
+    </div>
+  </div>
+</section>

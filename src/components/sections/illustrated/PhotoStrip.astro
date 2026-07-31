@@ -1,0 +1,25 @@
+---
+// The windowed, scroll-driven photo strip for the illustrated company
+// sections. Each company's photostrip.png is one pre-composed image
+// (multiple photos/placeholder frames already baked into one tall strip,
+// not separate files) — this component just renders it inside a clipped
+// window; CompanyIllustrated.astro's <script> drives how far it's
+// scrolled via a `transform: translateY(...)` set directly on
+// `.photostrip-img` (see that component for the scroll-pin mechanics).
+interface Props {
+  assetDir: string;
+}
+
+const { assetDir } = Astro.props;
+const base = `/images/projects/${assetDir}`;
+---
+
+<div class="photostrip-column">
+  <div class="photostrip-window">
+    <picture class="photostrip-img">
+      <source type="image/avif" srcset={`${base}/photostrip.avif`} />
+      <source type="image/webp" srcset={`${base}/photostrip.webp`} />
+      <img src={`${base}/photostrip.png`} alt="" loading="lazy" decoding="async" />
+    </picture>
+  </div>
+</div>
