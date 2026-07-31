@@ -222,12 +222,17 @@ echo "done"
 ```
 Expected: no `MISSING:` lines printed, just `done`.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Do NOT commit these files**
 
+There is no commit for this task. `public/images/projects/` is covered by `.gitignore:26` (`/public/images/`) — generated image output is large binary data that is deliberately kept out of git, and deploys upload the local filesystem directly rather than pulling these from the repo. `reverielle` and `compositwin`'s generated images already follow this; `chloefriendly`/`sewciety` must too.
+
+Do not `git add` (and especially not `git add -f`) anything under `public/images/`. The files only need to exist on disk for the dev server and the deploy to pick them up, which Steps 1–2 already guarantee.
+
+Verify nothing slipped through:
 ```bash
-git add public/images/projects/chloefriendly public/images/projects/sewciety
-git commit -m "Generate optimized image assets for ChloeFriendly and Sewciety"
+git status --short public/images/projects/chloefriendly public/images/projects/sewciety
 ```
+Expected: no output (the paths are ignored, so they don't appear at all).
 
 ---
 
@@ -408,12 +413,17 @@ Append to `src/styles/global.css` (end of file):
   z-index: 1;
 }
 
+/* `:focus-visible` mirrors `:hover` so keyboard users get the same
+   crossfade preview before committing to Enter/Space — same pairing as
+   .hero-icon's social icons. */
 .capsule-hit:hover ~ .capsule-sprite--closed,
+.capsule-hit:focus-visible ~ .capsule-sprite--closed,
 .capsule-hit.expanded ~ .capsule-sprite--closed {
   opacity: 0;
 }
 
 .capsule-hit:hover ~ .capsule-sprite--open,
+.capsule-hit:focus-visible ~ .capsule-sprite--open,
 .capsule-hit.expanded ~ .capsule-sprite--open {
   opacity: 1;
 }
@@ -442,12 +452,19 @@ Append to `src/styles/global.css` (end of file):
   color: var(--color-text);
 }
 
+/* `overflow-y: auto` only in the expanded state — the resting rule above
+   keeps `overflow: hidden` so nothing spills out of the capsule-sized box
+   while it grows or shrinks. The panel is a fixed percentage height but
+   `highlights` is an arbitrary-length array, so without this, long lists
+   are silently clipped (ChloeFriendly's real content already loses a few
+   pixels off its last bullet at common viewport sizes). */
 .capsule-hit.expanded ~ .capsule-panel {
   left: 8%;
   top: 6%;
   width: 84%;
   height: 56%;
   opacity: 1;
+  overflow-y: auto;
   pointer-events: auto;
 }
 
@@ -775,7 +792,7 @@ Append to `src/styles/global.css`, directly after the capsule machine CSS added 
 /* ─── Photo strip (scroll-pinned — see CompanyIllustrated.astro's
    <script> for how .photostrip-img's transform is driven) ─── */
 .photostrip-column {
-  flex: 0 0 clamp(10rem, 24%, 18rem);
+  flex: 0 0 clamp(10rem, 24%, 22rem);
   height: 100%;
   position: relative;
 }
@@ -787,22 +804,53 @@ Append to `src/styles/global.css`, directly after the capsule machine CSS added 
   border-radius: var(--radius-card);
 }
 
+/* Size the strip by HEIGHT, as a fixed multiple of the pin's own height.
+   Do NOT size it by width and let the height come from the loaded image's
+   aspect ratio (`width: 100%; height: auto`) — the box then measures 0px
+   tall until the image loads, so Task 5's measure() reads stripHeight = 0
+   and disables the pin outright on any uncached page load. Height-driven
+   sizing is also the only way to guarantee the strip actually exceeds the
+   pin: at 1280x800, 1440x900 and 1920x1080 an aspect-ratio-sized strip in
+   this narrow column comes out roughly the same height as the pin, so
+   extraScroll lands on 0 and the scroll-pin is dead.
+   Width then follows the art's own aspect ratio and will overflow the
+   narrow column, so the strip is centered and clipped with the standalone
+   `translate` property — deliberately NOT `transform`, which Task 5's
+   script writes every frame. */
 .photostrip-img {
   position: absolute;
-  left: 0;
+  left: 50%;
   top: 0;
-  width: 100%;
+  height: calc((100vh - var(--nav-height)) * 1.3);
+  width: auto;
+  translate: -50% 0;
   display: block;
   will-change: transform;
 }
 
 .photostrip-img img {
   display: block;
-  width: 100%;
-  height: auto;
+  height: 100%;
+  width: auto;
 }
 
 /* ─── Mobile fallback (below sm) ─── */
+
+/* Every sibling section (CompanySection, ProjectIllustrated) carries
+   `full-page-section` for its framing, but this one can't: that class
+   sets `display`, which would fight both the sticky-pin height math on
+   desktop and the Tailwind `hidden`/`sm:` utilities on the children.
+   Without this the two stacked-text blocks butt straight into each other
+   on mobile with no min-height and no padding. */
+@media (max-width: 640px) {
+  .company-illustrated-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 4rem 0;
+  }
+}
+
 .company-illustrated-mobile__details p {
   margin: 0 0 0.5em;
 }
@@ -924,7 +972,7 @@ git commit -m "Add CompanyIllustrated section with capsule machine and photo str
 
 **Interfaces:**
 - Consumes: `.company-illustrated-section` / `.company-illustrated-pin` / `.photostrip-img` DOM structure from Task 4; the site's fixed nav (`<header>` in `Nav.astro`, `position: fixed`) to measure the sticky offset.
-- Produces: at runtime, `.company-illustrated-section` gets an inline `height: calc(100vh + <extraScroll>px)`; `.photostrip-img` gets an inline `transform: translateY(<n>px)` driven by scroll position.
+- Produces: at runtime, `.company-illustrated-section` gets an inline `height: calc(100vh - var(--nav-height) + <extraScroll>px)` (matching `.company-illustrated-pin`'s own height, so the sticky slack equals exactly `extraScroll`); `.photostrip-img` gets an inline `transform: translateY(<n>px)` driven by scroll position.
 
 - [ ] **Step 1: Add the scroll-pin script**
 
@@ -988,7 +1036,13 @@ Edit `src/components/sections/CompanyIllustrated.astro`. Add this `<script>` blo
         const extraScroll = Math.max(0, stripHeight - pinHeight);
         if (extraScroll === 0) return;
 
-        section.style.height = `calc(100vh + ${extraScroll}px)`;
+        // Must match `.company-illustrated-pin`'s own
+        // `calc(100vh - var(--nav-height))` height plus the extra scroll.
+        // Writing plain `calc(100vh + ...)` here gives the sticky element
+        // `extraScroll + navHeight` of slack while the progress math below
+        // only divides by `extraScroll`, so the strip finishes early and
+        // every pin ends in a stretch of dead scrolling.
+        section.style.height = `calc(100vh - var(--nav-height) + ${extraScroll}px)`;
         const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         strips.push({ section, stripImg, sectionTop, extraScroll });
       });
@@ -1018,6 +1072,13 @@ Edit `src/components/sections/CompanyIllustrated.astro`. Add this `<script>` blo
       measure();
       applyScroll();
     });
+    // `sectionTop` is cached at measure time, but the hero/project images
+    // above these sections are `loading="lazy"` and can still shift layout
+    // afterwards, staling it. Safety net for content above the strip.
+    window.addEventListener('load', () => {
+      measure();
+      applyScroll();
+    });
   }
 </script>
 ```
@@ -1036,6 +1097,18 @@ Append to `src/styles/global.css`, directly after the `.photostrip-img img` rule
   .photostrip-img {
     position: static !important;
     transform: none !important;
+  }
+
+  /* Task 4's `translate: -50% 0` centering only makes sense paired with
+     `left: 50%` on an absolutely-positioned strip; it would shove the
+     static (in-flow) strip half its own width off to the left here.
+     This reset MUST live in its own rule with its own selector: put
+     `translate: none` next to the `transform: none` above and
+     lightningcss folds the pair into a single `transform: translate(0,0)`
+     at build time, silently dropping the `translate` reset. Check
+     `dist/_astro/*.css` after building if you change this. */
+  .photostrip-column .photostrip-img {
+    translate: none !important;
   }
 }
 ```
@@ -1064,7 +1137,7 @@ Also confirm the section's reserved height:
 ```js
 document.querySelector('#company-chloefriendly').style.height
 ```
-Expected: a `calc(100vh + <n>px)` string with `<n> > 0` (assuming the photo strip's rendered height exceeds the pin's viewport height at the current window size — if the two are close, `<n>` may be small; that's fine as long as it's non-negative and the transform above changes with scroll).
+Expected: a `calc(100vh - var(--nav-height) + <n>px)` string. Because Task 4 sizes the strip at a fixed `1.3x` of the pin's height, `<n>` should land near 30% of the pin's height (roughly 220px at 800px viewport height, 300px at 1080px) — not a small or zero value. `<n>` coming out `0`, or the section having no inline height at all, means the strip is being measured before it has a height and the pin has silently disabled itself; re-check that `.photostrip-img` is sized by `height`, not by the image's loaded aspect ratio.
 
 - [ ] **Step 5: Verify the reduced-motion fallback (code review)**
 
