@@ -183,7 +183,13 @@ const base = `/images/projects/${assetDir}`;
         const extraScroll = Math.max(0, stripHeight - pinHeight);
         if (extraScroll === 0) return;
 
-        section.style.height = `calc(100vh + ${extraScroll}px)`;
+        // Must match `.company-illustrated-pin`'s own
+        // `calc(100vh - var(--nav-height))` height plus the extra scroll,
+        // or the sticky element has `extraScroll + navHeight` of slack
+        // while the progress math below only divides by `extraScroll` —
+        // i.e. the strip finishes early and the tail of every pin is dead
+        // scrolling with nothing moving.
+        section.style.height = `calc(100vh - var(--nav-height) + ${extraScroll}px)`;
         const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         strips.push({ section, stripImg, sectionTop, extraScroll });
       });
@@ -210,6 +216,15 @@ const base = `/images/projects/${assetDir}`;
 
     window.addEventListener('scroll', scheduleScroll, { passive: true });
     window.addEventListener('resize', () => {
+      measure();
+      applyScroll();
+    });
+    // `sectionTop` is cached at measure time, but images above these
+    // sections (hero, projects) are `loading="lazy"` and can still shift
+    // the page's layout afterwards, staling it. The strip's own height is
+    // CSS-driven and load-independent, so this is purely a safety net for
+    // content above it.
+    window.addEventListener('load', () => {
       measure();
       applyScroll();
     });
