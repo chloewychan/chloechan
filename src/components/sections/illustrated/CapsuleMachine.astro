@@ -1,0 +1,74 @@
+---
+// Capsule machine reveal for the illustrated company sections
+// (ChloeFriendly, Sewciety). Closed by default; hovering crosses over to
+// the open-capsule art; clicking toggles a persistent "expanded" state
+// that grows a text panel from the capsule's own small spot up into the
+// machine's dome area, showing this company's real position/timeline/
+// highlights (not placeholder copy).
+//
+// Unlike the illustrated projects' blind box, this machine art isn't
+// baked onto a shared page-wide canvas — it's its own independently
+// cropped sprite. So `.capsule-machine` is its own local coordinate box
+// (aspect-ratio matches the art's native 1002x1032 size) and every child
+// position below is a percentage of *that* box, not the page.
+//
+// DOM order is [body, hit, closed, open, panel] so the `.capsule-hit:hover
+// ~ .layer` sibling selectors in global.css can reach every later sibling
+// (the general sibling combinator only matches later siblings) — same
+// technique as illustrated/BlindBox.astro.
+import { wiggleVariant } from '../../../lib/wiggleSprite';
+
+interface Props {
+  assetDir: string; // e.g. "chloefriendly" -> /images/projects/chloefriendly/
+  companyName: string;
+  position: string;
+  timeline: string;
+  highlights: string[];
+}
+
+const { assetDir, companyName, position, timeline, highlights } = Astro.props;
+const base = `/images/projects/${assetDir}`;
+const variant = wiggleVariant(`capsule-${assetDir}`);
+const wiggleStyle = `--inertia-kick:${variant.kick}; --inertia-friction:${variant.friction}; --inertia-max:${variant.max}; --bob-dur:${variant.bobDur}s; --bob-delay:${variant.bobDelay}s;`;
+---
+
+<div class={`capsule-machine wiggle-sprite hover-expand ${variant.bobClass}`} style={wiggleStyle}>
+  <picture class="capsule-machine__body">
+    <source type="image/avif" srcset={`${base}/capsulemachine.avif`} />
+    <source type="image/webp" srcset={`${base}/capsulemachine.webp`} />
+    <img src={`${base}/capsulemachine.png`} alt="" loading="lazy" decoding="async" />
+  </picture>
+
+  <button type="button" class="capsule-hit" aria-label={`Reveal more about ${companyName}`}></button>
+
+  <picture class="capsule-sprite capsule-sprite--closed">
+    <source type="image/avif" srcset={`${base}/capsule-closed.avif`} />
+    <source type="image/webp" srcset={`${base}/capsule-closed.webp`} />
+    <img src={`${base}/capsule-closed.png`} alt="" loading="lazy" decoding="async" />
+  </picture>
+
+  <picture class="capsule-sprite capsule-sprite--open">
+    <source type="image/avif" srcset={`${base}/capsule-open.avif`} />
+    <source type="image/webp" srcset={`${base}/capsule-open.webp`} />
+    <img src={`${base}/capsule-open.png`} alt="" loading="lazy" decoding="async" />
+  </picture>
+
+  <div class="capsule-panel">
+    <p><strong>Position:</strong> {position}</p>
+    <p><strong>Timeline:</strong> {timeline}</p>
+    {highlights.length > 0 && (
+      <ul>
+        {highlights.map((point) => <li>{point}</li>)}
+      </ul>
+    )}
+  </div>
+</div>
+
+<script>
+  // Astro dedupes this across every CapsuleMachine instance on the page.
+  document.querySelectorAll<HTMLButtonElement>('.capsule-hit').forEach((hit) => {
+    hit.addEventListener('click', () => {
+      hit.classList.toggle('expanded');
+    });
+  });
+</script>

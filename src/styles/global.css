@@ -979,3 +979,140 @@ body {
 .carousel-rotate .carousel-rect[data-slot='1'] { left: 2%; top: 2%; width: 32%; height: 40%; z-index: 2; }
 .carousel-rotate .carousel-rect[data-slot='2'] { left: 58%; top: 0%; width: 28%; height: 36%; z-index: 2; }
 .carousel-rotate .carousel-rect[data-slot='3'] { left: 0%; top: 46%; width: 24%; height: 30%; z-index: 1; }
+
+/* ============================================================
+   COMPANY — ILLUSTRATED CAPSULE (ChloeFriendly, Sewciety)
+   ============================================================
+   Unlike the illustrated projects (one pre-composed 4096x1714 canvas per
+   layer), these companies' art is a set of independently-cropped sprites
+   with no shared canvas to line up against — background.png is the only
+   full-canvas layer. So the section is laid out with flexbox (photo strip
+   column / title+links column / capsule column) instead of percentage
+   coordinates on a fixed canvas; only the capsule machine's own small
+   sprite/text-panel positions use percentage math, scoped to its own
+   local box (see below).
+   ============================================================ */
+
+/* ─── Capsule machine ─── */
+.capsule-machine {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1002 / 1032;
+}
+
+.capsule-machine__body {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.capsule-machine__body img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Positioned against the machine art's dispenser slot (lower-center) —
+   shared by both companies since their capsule-machine art uses the same
+   template/proportions, just recolored, so this is hardcoded once here
+   rather than threaded as per-company content fields. */
+.capsule-hit {
+  position: absolute;
+  left: 62%;
+  top: 64%;
+  width: 22%;
+  height: 20%;
+  z-index: 2;
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.capsule-sprite {
+  position: absolute;
+  left: 62%;
+  top: 64%;
+  width: 22%;
+  height: 20%;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.capsule-sprite img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.capsule-sprite--closed {
+  opacity: 1;
+  z-index: 1;
+}
+
+.capsule-sprite--open {
+  opacity: 0;
+  z-index: 1;
+}
+
+.capsule-hit:hover ~ .capsule-sprite--closed,
+.capsule-hit.expanded ~ .capsule-sprite--closed {
+  opacity: 0;
+}
+
+.capsule-hit:hover ~ .capsule-sprite--open,
+.capsule-hit.expanded ~ .capsule-sprite--open {
+  opacity: 1;
+}
+
+/* Grows from the capsule's own small bbox (matching .capsule-hit/
+   .capsule-sprite exactly, so it visually starts "as the capsule") up
+   into the machine's dome area above — position and size animate
+   together on click. */
+.capsule-panel {
+  position: absolute;
+  left: 62%;
+  top: 64%;
+  width: 22%;
+  height: 20%;
+  z-index: 3;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: color-mix(in srgb, var(--color-bg) 92%, transparent);
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.18);
+  padding: clamp(0.5rem, 1.5%, 1.25rem);
+  transition: left 380ms ease, top 380ms ease, width 380ms ease, height 380ms ease, opacity 260ms ease;
+  font-size: clamp(0.6rem, 1vw, 0.85rem);
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.capsule-hit.expanded ~ .capsule-panel {
+  left: 8%;
+  top: 6%;
+  width: 84%;
+  height: 56%;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.capsule-panel p {
+  margin: 0 0 0.4em;
+}
+
+.capsule-panel ul {
+  list-style: disc;
+  margin: 0.4em 0 0;
+  padding-left: 1.1em;
+}
+
+.capsule-panel li + li {
+  margin-top: 0.25em;
+}
