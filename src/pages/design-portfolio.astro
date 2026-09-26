@@ -1,0 +1,417 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = '/images/projects/design-portfolio';
+
+interface Img {
+  file: string;
+  alt: string;
+  caption: string;
+  w?: number;
+  h?: number;
+}
+
+const uiuxImages: Img[] = [
+  { file: 'SnuffleStudy', alt: 'SnuffleStudy Figma webapp frames', caption: 'SnuffleStudy — webapp frames designed in Figma' },
+  { file: 'SnuffleStudy_Frames', alt: 'SnuffleStudy hand-drawn assets', caption: 'SnuffleStudy — assets drawn in Procreate' },
+  { file: 'Hero', alt: 'Hero section illustration', caption: 'Hero — this portfolio site' },
+  { file: 'Reverielle', alt: 'Reverielle project design', caption: 'Reverielle — dynamic portfolio project' },
+  { file: 'Compositwin', alt: 'Compositwin project design', caption: 'Compositwin — dynamic portfolio project' },
+  { file: 'ChloeFriendly', alt: 'ChloeFriendly project design', caption: 'ChloeFriendly — dynamic portfolio project' },
+  { file: 'Sewciety', alt: 'Sewciety project design', caption: 'Sewciety — dynamic portfolio project' },
+];
+
+const dessertImages: Img[] = Array.from({ length: 10 }, (_, i) => {
+  const n = 4584 + i;
+  return { file: `IMG_${n}`, alt: `Dessert asset ${n}`, caption: '' };
+});
+
+const materialImages: Img[] = Array.from({ length: 10 }, (_, i) => {
+  const n = 4594 + i;
+  return { file: `IMG_${n}`, alt: `Metallic tool/appliance asset ${n}`, caption: '' };
+});
+
+const ingredientImages: Img[] = Array.from({ length: 10 }, (_, i) => {
+  const n = 4604 + i;
+  return { file: `IMG_${n}`, alt: `Baking ingredient asset ${n}`, caption: '' };
+});
+
+const compositeImages: Img[] = [
+  { file: 'IMG_4580', alt: 'Photoshop composite piece', caption: 'Composite — multiple images combined into one piece', w: 3200, h: 4000 },
+  { file: 'IMG_4581', alt: 'Photoshop composite piece', caption: 'Composite — multiple images combined into one piece', w: 3600, h: 4800 },
+];
+
+const drawingImages: Img[] = [
+  { file: 'IMG_4582', alt: 'Photoshop drawing', caption: 'Drawn in Photoshop', w: 4032, h: 3024 },
+  { file: 'IMG_4583', alt: 'Photoshop drawing', caption: 'Drawn in Photoshop', w: 4032, h: 3024 },
+];
+
+const stickerImages: Img[] = [
+  { file: 'IMG_4615', alt: 'Capybara fundraiser sticker design', caption: '' },
+  { file: 'IMG_4616', alt: 'Capybara fundraiser sticker design', caption: '' },
+  { file: 'IMG_4617', alt: 'Capybara fundraiser sticker design', caption: '' },
+  { file: 'IMG_4618', alt: 'Capybara fundraiser sticker design', caption: '' },
+];
+---
+
+<BaseLayout title="Design Portfolio | Chloe Chan">
+  <header class="dp-header">
+    <nav class="dp-nav">
+      <a href="/" class="header-logo dp-logo">Chloe Chan</a>
+      <ul class="dp-nav-links">
+        <li><a href="#uiux" class="nav-link">UI/UX</a></li>
+        <li><a href="#assets" class="nav-link">Asset Design</a></li>
+        <li><a href="#photoshop" class="nav-link">Photoshop</a></li>
+        <li><a href="#stickers" class="nav-link">Stickers</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="dp-main">
+    <section class="dp-intro">
+      <span class="dp-overline">Portfolio</span>
+      <h1 class="dp-title">Design Portfolio</h1>
+      <p class="dp-tagline">UI/UX design, illustrated assets, Photoshop work, and sticker design.</p>
+    </section>
+
+    <section id="uiux" class="dp-section">
+      <h2 class="dp-heading">Website UI/UX Design (Figma)</h2>
+      <p class="dp-section-intro">Webapp frames designed in Figma, with hand-drawn assets from Procreate, and a set of dynamic portfolio projects.</p>
+      <div class="dp-grid dp-grid--3">
+        {uiuxImages.map((img) => (
+          <figure class="dp-item dp-item--wide">
+            <picture>
+              <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+              <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+              <img src={`${base}/${img.file}.png`} alt={img.alt} loading="lazy" decoding="async" />
+            </picture>
+            <figcaption>{img.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="assets" class="dp-section dp-section--bg">
+      <picture class="dp-section-bg">
+        <source type="image/avif" srcset={`${base}/IMG_4614.avif`} />
+        <source type="image/webp" srcset={`${base}/IMG_4614.webp`} />
+        <img src={`${base}/IMG_4614.png`} alt="" loading="lazy" decoding="async" />
+      </picture>
+      <div class="dp-section-content">
+        <h2 class="dp-heading">Asset Design</h2>
+        <p class="dp-section-intro">Original illustrated assets exploring desserts, materials, and ingredients across cultures.</p>
+
+        <h3 class="dp-subheading">Desserts across cultures</h3>
+        <p class="dp-subintro">Referenced desserts from different cultures to design this set of assets.</p>
+        <div class="dp-grid dp-grid--5">
+          {dessertImages.map((img) => (
+            <figure class="dp-item">
+              <picture>
+                <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+                <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+                <img src={`${base}/${img.file}.png`} alt={img.alt} loading="lazy" decoding="async" />
+              </picture>
+            </figure>
+          ))}
+        </div>
+
+        <h3 class="dp-subheading">Tools &amp; appliances</h3>
+        <p class="dp-subintro">Combined colour and lighting techniques to mimic metallic surfaces and other materials.</p>
+        <div class="dp-grid dp-grid--5">
+          {materialImages.map((img) => (
+            <figure class="dp-item">
+              <picture>
+                <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+                <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+                <img src={`${base}/${img.file}.png`} alt={img.alt} loading="lazy" decoding="async" />
+              </picture>
+            </figure>
+          ))}
+        </div>
+
+        <h3 class="dp-subheading">Baking ingredients</h3>
+        <p class="dp-subintro">Drew the baking ingredients that go into the desserts above.</p>
+        <div class="dp-grid dp-grid--5">
+          {ingredientImages.map((img) => (
+            <figure class="dp-item">
+              <picture>
+                <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+                <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+                <img src={`${base}/${img.file}.png`} alt={img.alt} loading="lazy" decoding="async" />
+              </picture>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="photoshop" class="dp-section">
+      <h2 class="dp-heading">Photoshop</h2>
+      <p class="dp-section-intro">Photo composites and original artwork made with Photoshop's editing and drawing tools.</p>
+      <div class="dp-grid dp-grid--2">
+        {compositeImages.map((img) => (
+          <figure class="dp-item dp-item--natural">
+            <picture>
+              <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+              <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+              <img src={`${base}/${img.file}.png`} alt={img.alt} width={img.w} height={img.h} loading="lazy" decoding="async" />
+            </picture>
+            <figcaption>{img.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="dp-grid dp-grid--2">
+        {drawingImages.map((img) => (
+          <figure class="dp-item dp-item--natural">
+            <picture>
+              <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+              <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+              <img src={`${base}/${img.file}.png`} alt={img.alt} width={img.w} height={img.h} loading="lazy" decoding="async" />
+            </picture>
+            <figcaption>{img.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="stickers" class="dp-section">
+      <h2 class="dp-heading">Sticker Design</h2>
+      <p class="dp-section-intro">High-quality sticker designs with a proper cutout margin, made for a capybara-protection fundraiser.</p>
+      <div class="dp-grid dp-grid--4">
+        {stickerImages.map((img) => (
+          <figure class="dp-item">
+            <picture>
+              <source type="image/avif" srcset={`${base}/${img.file}.avif`} />
+              <source type="image/webp" srcset={`${base}/${img.file}.webp`} />
+              <img src={`${base}/${img.file}.png`} alt={img.alt} loading="lazy" decoding="async" />
+            </picture>
+          </figure>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .dp-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: var(--nav-height);
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .dp-nav {
+    max-width: 80rem;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dp-logo {
+    font-size: 1.125rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .dp-logo:hover {
+    color: var(--color-brand);
+  }
+
+  .dp-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .dp-main {
+    padding-top: var(--nav-height);
+  }
+
+  .dp-intro {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 2rem;
+    text-align: center;
+  }
+
+  .dp-overline {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+
+  .dp-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    color: var(--color-text);
+    margin: 0 0 1rem;
+  }
+
+  .dp-tagline {
+    font-size: 1.0625rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+
+  .dp-section {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .dp-section--bg {
+    max-width: none;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .dp-section-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .dp-section-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+  }
+
+  .dp-section-content {
+    position: relative;
+    z-index: 1;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  .dp-heading {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: var(--color-text);
+    margin: 0 0 0.5rem;
+  }
+
+  .dp-subheading {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 2rem 0 0.375rem;
+  }
+
+  .dp-section-intro,
+  .dp-subintro {
+    color: var(--color-muted);
+    max-width: 42rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .dp-subintro {
+    margin-bottom: 1rem;
+  }
+
+  .dp-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dp-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 1rem;
+  }
+
+  .dp-grid--3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dp-grid--4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dp-grid--5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 640px) {
+    .dp-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .dp-grid--4 { grid-template-columns: repeat(4, 1fr); }
+    .dp-grid--5 { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (min-width: 900px) {
+    .dp-grid--5 { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  .dp-item {
+    margin: 0;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .dp-item picture {
+    display: block;
+    aspect-ratio: 1 / 1;
+    /* Asset-design/sticker art is drawn on a transparent canvas in pale
+       cream/tan tones close to --color-surface — without a plain white
+       backing it nearly disappears at thumbnail size. */
+    background-color: #fff;
+  }
+
+  .dp-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dp-item figcaption {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+  }
+
+  .dp-item figcaption:empty {
+    display: none;
+  }
+
+  /* UI/UX canvases are wide (~2.4:1 or 1.5:1) — contain instead of crop so
+     the full design is visible rather than cutting off text/buttons. */
+  .dp-item--wide picture {
+    aspect-ratio: 2 / 1;
+    background-color: var(--color-bg);
+  }
+
+  .dp-item--wide img {
+    object-fit: contain;
+  }
+
+  /* Photoshop pieces mix portrait/landscape — let each keep its own
+     proportions instead of forcing a crop. */
+  .dp-item--natural picture {
+    aspect-ratio: auto;
+  }
+
+  .dp-item--natural img {
+    height: auto;
+    object-fit: contain;
+  }
+</style>

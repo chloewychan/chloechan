@@ -113,7 +113,7 @@ async function main() {
     const id = dir.name.replace(/-source$/, '');
     const srcDir = join(ASSETS_DIR, dir.name);
     const outDir = join(PROJECTS_OUT_DIR, id);
-    const files = readdirSync(srcDir).filter((f) => /\.png$/i.test(f));
+    const files = readdirSync(srcDir).filter((f) => /\.(png|jpe?g)$/i.test(f));
     for (const file of files) {
       const baseName = basename(file, extname(file));
       const build = TRIMMED_BASENAMES.has(baseName) ? buildTrimmedNativeSet : buildNativeSet;
