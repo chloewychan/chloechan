@@ -16,7 +16,7 @@
   "photostripPosition": "right",
   "logoAlt": "ChloeFriendly bunny mascot holding a crochet hook",
   "links": [
-    { "label": "Etsy Shop", "url": "#" },
-    { "label": "Instagram", "url": "#" }
+    { "label": "Etsy Shop", "url": "https://chloefriendly.etsy.com/" },
+    { "label": "Instagram", "url": "https://www.instagram.com/chloefriendlyy" }
   ]
 }

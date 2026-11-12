@@ -14,7 +14,8 @@
 import ExpandingCarousel from './illustrated/ExpandingCarousel.astro';
 import RotatingCarousel from './illustrated/RotatingCarousel.astro';
 import BlindBox from './illustrated/BlindBox.astro';
-import { spriteBounds } from '../../lib/spriteBounds';
+import sharp from 'sharp';
+import { join } from 'node:path';
 
 interface Props {
   id: string;
@@ -34,10 +35,13 @@ interface Props {
   buttonsY: number;
   buttonsW: number;
   buttonsH: number;
+  selfieX: number;
+  selfieY: number;
   carouselPosition: 'left' | 'right';
   carouselVariant: 'expand' | 'rotate';
   carouselImageCount: number;
   carouselCaption: string[];
+  carouselImages?: boolean;
 }
 
 const {
@@ -58,18 +62,21 @@ const {
   buttonsY,
   buttonsW,
   buttonsH,
+  selfieX,
+  selfieY,
   carouselPosition,
   carouselVariant,
   carouselImageCount,
   carouselCaption,
+  carouselImages = false,
 } = Astro.props;
 
 const base = `/images/projects/${assetDir}`;
 const isCarouselRight = carouselPosition === 'right';
 
 const carouselBox = isCarouselRight
-  ? { left: 55, top: 6, width: 41, height: 60 }
-  : { left: 4, top: 6, width: 41, height: 60 };
+  ? { left: 55, top: 6, width: 41, height: 80 }
+  : { left: 4, top: 6, width: 41, height: 80 };
 
 const titleBox = isCarouselRight ? { left: 16, top: 2, width: 38 } : { left: 46, top: 2, width: 42 };
 
@@ -79,17 +86,58 @@ const Carousel = carouselVariant === 'rotate' ? RotatingCarousel : ExpandingCaro
 // offset/size in both projects' art, so it isn't its own content field.
 const BUTTON2_Y_OFFSET = 8.34;
 
-// The selfie is still (not a wiggle sprite) but does grow slightly on
-// hover/focus like the rest of the site's clickable art. It's a
-// full-canvas overlay though — mostly transparent, person drawn
-// somewhere inside — and normally has pointer-events:none (see
-// .illustrated-layer) so it doesn't intercept clicks meant for the
-// buttons/blind box underneath. Turning pointer-events on for the whole
-// box would break that, so it's clipped to just the measured art bounds
-// first: only that region is hoverable, and transform-origin is set to
-// its center so the scale grows from the person, not the canvas corner.
-const selfieBounds = await spriteBounds(`${base}/selfie.png`);
-const selfieHoverStyle = `pointer-events:auto; clip-path: inset(${selfieBounds.y}% ${100 - selfieBounds.x - selfieBounds.w}% ${100 - selfieBounds.y - selfieBounds.h}% ${selfieBounds.x}%); transform-origin: ${selfieBounds.x + selfieBounds.w / 2}% ${selfieBounds.y + selfieBounds.h / 2}%;`;
+// Image sizing is controlled here, not by the art files. The selfie is a
+// standalone image (any size/ratio, no full-canvas padding): every project's
+// selfie is drawn SELFIE_WIDTH_PX wide, measured on the 4096px-wide design
+// canvas (converted to a % so it scales with the canvas), and its height
+// follows the supplied image's own aspect ratio automatically (height:auto).
+// Each project only supplies where the top-left corner goes (selfieX/selfieY
+// in its JSON).
+const CANVAS_WIDTH_PX = 4096;
+const SELFIE_WIDTH_PX = 720;
+const selfieWidthPct = (SELFIE_WIDTH_PX / CANVAS_WIDTH_PX) * 100;
+
+// Carousel images work the same way, in two fixed-size "boxes" (all as % of
+// the carousel's stage, i.e. the area between the two arrows). Each image is
+// fitted inside a box keeping its own aspect ratio, so nothing is cropped
+// and a landscape screenshot fills the width while a tall phone screenshot
+// fills the height:
+//   - resting size:  CAROUSEL_MAX_W_PCT x CAROUSEL_MAX_H_PCT  (the 3 others)
+//   - active size:   ACTIVE_MAX_W_PCT   x ACTIVE_MAX_H_PCT    (the selected one,
+//     which also glides to the center of the stage so it can be this big)
+// Edit these four numbers to resize every project's carousel at once.
+const CAROUSEL_MAX_W_PCT = 46;
+const CAROUSEL_MAX_H_PCT = 50;
+const ACTIVE_MAX_W_PCT = 85;
+const ACTIVE_MAX_H_PCT = 100;
+
+// Stage shape, derived from the layout: the carousel slot is
+// carouselBox.width x carouselBox.height (% of the 4096x1714 canvas), and
+// the stage is what's left of its width after the two arrows (8% each) and
+// the two 2% gaps (see .image-carousel / .carousel-arrow-btn in global.css).
+const STAGE_WIDTH_FRACTION = 1 - 2 * 0.08 - 2 * 0.02;
+const stageHeightPerWidth =
+  (carouselBox.height * 1714) / (carouselBox.width * STAGE_WIDTH_FRACTION * 4096);
+
+// Per-image box width plus the active-state scale and centered position
+// (CSS custom properties on each carousel image, see .carousel-rect--image).
+const carouselImageLayout: ({ width: number; activeScale: number; activeLeft: number; activeTop: number } | undefined)[] = [];
+if (carouselImages) {
+  for (let i = 0; i < carouselImageCount; i++) {
+    try {
+      const meta = await sharp(join(process.cwd(), 'public', base, `carousel-${i + 1}.png`)).metadata();
+      const ratio = meta.width! / meta.height!;
+      // box height as % of stage height, for a given box width (% of stage width)
+      const heightOf = (w: number) => w / (ratio * stageHeightPerWidth);
+      const width = Math.min(CAROUSEL_MAX_W_PCT, CAROUSEL_MAX_H_PCT * stageHeightPerWidth * ratio);
+      const height = heightOf(width);
+      const activeScale = Math.min(ACTIVE_MAX_W_PCT / width, ACTIVE_MAX_H_PCT / height);
+      carouselImageLayout.push({ width, activeScale, activeLeft: 50 - width / 2, activeTop: 50 - height / 2 });
+    } catch {
+      carouselImageLayout.push(undefined); // image not added yet — CSS default size
+    }
+  }
+}
 ---
 
 <section id={id} class="full-page-section illustrated-section flex items-center">
@@ -171,17 +219,17 @@ const selfieHoverStyle = `pointer-events:auto; clip-path: inset(${selfieBounds.y
       </a>
     )}
 
-    <picture class="illustrated-layer hover-expand" style={selfieHoverStyle}>
+    <picture class="illustrated-selfie hover-expand" style={`left:${selfieX}%; top:${selfieY}%; width:${selfieWidthPct}%;`}>
       <source type="image/avif" srcset={`${base}/selfie.avif`} />
       <source type="image/webp" srcset={`${base}/selfie.webp`} />
-      <img src={`${base}/selfie.png`} alt="" loading="lazy" decoding="async" />
+      <img src={`${base}/selfie.png`} alt="" loading="lazy" decoding="async" onerror="this.closest('picture')?.remove()" />
     </picture>
 
     <div
       class="illustrated-carousel-slot"
       style={`left:${carouselBox.left}%; top:${carouselBox.top}%; width:${carouselBox.width}%; height:${carouselBox.height}%;`}
     >
-      <Carousel count={carouselImageCount} caption={carouselCaption} seed={assetDir} />
+      <Carousel count={carouselImageCount} caption={carouselCaption} seed={assetDir} imageBase={carouselImages ? base : undefined} imageLayout={carouselImageLayout} />
     </div>
   </div>
 </section>

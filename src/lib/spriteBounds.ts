@@ -19,7 +19,7 @@ export interface SpriteBounds {
 const ALPHA_THRESHOLD = 20;
 const cache = new Map<string, SpriteBounds>();
 
-// publicPath is a URL path under /public, e.g. "/images/projects/reverielle/selfie.png"
+// publicPath is a URL path under /public, e.g. "/images/projects/snufflestudy/selfie.png"
 export async function spriteBounds(publicPath: string): Promise<SpriteBounds> {
   const cached = cache.get(publicPath);
   if (cached) return cached;

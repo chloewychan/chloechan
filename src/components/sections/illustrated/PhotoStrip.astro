@@ -6,17 +6,32 @@
 // window; CompanyIllustrated.astro's <script> drives how far it's
 // scrolled via a `transform: translateY(...)` set directly on
 // `.photostrip-img` (see that component for the scroll-pin mechanics).
+import sharp from 'sharp';
+import { join } from 'node:path';
+
 interface Props {
   assetDir: string;
 }
 
 const { assetDir } = Astro.props;
 const base = `/images/projects/${assetDir}`;
+
+// The strip is always drawn at one fixed width (see --photostrip-width in
+// global.css); its height follows the supplied image's own aspect ratio, so
+// any size/shape of photostrip.png works. Measured at build time so the box
+// has a definite height before the image loads (the scroll-pin math needs it).
+let ratioStyle = '';
+try {
+  const { width, height } = await sharp(join(process.cwd(), 'public', base, 'photostrip.png')).metadata();
+  ratioStyle = `aspect-ratio: ${width} / ${height};`;
+} catch {
+  // falls back to the CSS default
+}
 ---
 
 <div class="photostrip-column">
   <div class="photostrip-window">
-    <picture class="photostrip-img">
+    <picture class="photostrip-img" style={ratioStyle}>
       <source type="image/avif" srcset={`${base}/photostrip.avif`} />
       <source type="image/webp" srcset={`${base}/photostrip.webp`} />
       <img src={`${base}/photostrip.png`} alt="" decoding="async" />

@@ -1,0 +1,35 @@
+{
+  "title": "SnuffleStudy",
+  "tagline": "A peer-pressure study accountability companion. Snuffles turns studying into something your friends can actually hold you to, without anyone needing to keep a camera on.",
+  "order": 1,
+  "layout": "illustrated",
+  "label": "Chrome Browser Extension",
+  "details": [
+    "Chrome Web Store",
+    "Built with React and TypeScript",
+    "Uses Claude API, MV3, LiveKit, PostgreSQL"
+  ],
+  "websiteUrl": "https://chromewebstore.google.com/detail/snufflestudy/mninfolfcnlmlekofpdnbglilmlbhnap",
+  "githubUrl": "https://github.com/chloewychan/SnuffleStudy",
+  "blindboxAlt": "Bunny",
+  "carouselPosition": "right",
+  "carouselVariant": "expand",
+  "carouselImageCount": 4,
+  "carouselImages": true,
+  "carouselCaption": [
+    "Study Page",
+    "Bunny Page",
+    "Study Session",
+    "Friends Page"
+  ],
+  "blindboxX": 10.23,
+  "blindboxY": 33.20,
+  "blindboxW": 21.99,
+  "blindboxH": 58.46,
+  "buttonsX": 33.81,
+  "buttonsY": 41.19,
+  "buttonsW": 12.82,
+  "buttonsH": 6.88,
+  "selfieX": 32.76,
+  "selfieY": 60.68
+}

@@ -617,7 +617,7 @@ body {
 }
 
 /* ============================================================
-   PROJECT — ILLUSTRATED (Reverielle, Compositwin)
+   PROJECT — ILLUSTRATED (SnuffleStudy, Nymphase)
    ============================================================
    A fully hand-drawn scene per project. Every art layer (background,
    blind box states, buttons, photo) is exported as a full 4096x1714
@@ -653,6 +653,20 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* Standalone selfie: width is set inline (the same for every project, see
+   SELFIE_WIDTH_PX in ProjectIllustrated.astro); height follows the image's
+   own aspect ratio. Grows slightly on hover like the other clickable art. */
+.illustrated-selfie {
+  position: absolute;
+  display: block;
+}
+
+.illustrated-selfie img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* ─── Blind box ─── */
@@ -716,7 +730,7 @@ body {
 
 /* Inset is relative to the hit region (blindboxX/Y/W/H), not the box art
    itself — right is wider than left because Compositwin's hit region
-   extends further past its box-front art than Reverielle's does, and
+   extends further past its box-front art than SnuffleStudy's does, and
    this class is shared between both, so it has to satisfy the tighter
    (Compositwin) edge to stay fully covered by the front layer. */
 .blindbox-details {
@@ -871,6 +885,17 @@ body {
   cursor: pointer;
 }
 
+.carousel-rect {
+  overflow: hidden;
+}
+
+.carousel-rect picture,
+.carousel-rect img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .carousel-rect:focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 3px;
@@ -935,7 +960,7 @@ body {
   opacity: 1;
 }
 
-/* Expanding variant (Reverielle): each rectangle keeps its own fixed spot;
+/* Expanding variant (SnuffleStudy): each rectangle keeps its own fixed spot;
    .active just enlarges/highlights whichever one the arrows point to.
    Uses the standalone `scale` property (combined with --hover-scale from
    `.hover-expand`, see below) rather than `transform: scale()` since
@@ -958,6 +983,36 @@ body {
 .carousel-expand .carousel-rect[data-index='1'] { left: 22%; top: 0%; }
 .carousel-expand .carousel-rect[data-index='2'] { left: 44%; top: 14%; }
 .carousel-expand .carousel-rect[data-index='3'] { left: 60%; top: 34%; }
+
+/* Real-image boxes: no fixed aspect ratio — the box takes the image's own
+   shape (landscape, portrait, whatever), with the width set here and the
+   height following from the image. Wider than the placeholder boxes since
+   landscape images need the room, so the left offsets are re-spaced to
+   keep the last one inside the stage. */
+.carousel-expand .carousel-rect--image {
+  width: 46%;
+  aspect-ratio: auto;
+  transition: scale 260ms ease, opacity 260ms ease, left 260ms ease, top 260ms ease;
+}
+
+/* Image file not found yet: keep a visible empty box instead of collapsing. */
+.carousel-expand .carousel-rect--missing {
+  aspect-ratio: 3 / 2;
+}
+
+.carousel-expand .carousel-rect--image[data-index='0'] { left: 0%; top: 30%; }
+.carousel-expand .carousel-rect--image[data-index='1'] { left: 18%; top: 0%; }
+.carousel-expand .carousel-rect--image[data-index='2'] { left: 36%; top: 14%; }
+.carousel-expand .carousel-rect--image[data-index='3'] { left: 54%; top: 34%; }
+
+/* The selected image grows to its own fixed-size "active box" and glides to
+   the middle of the stage so it has room (the per-image --active-* values
+   are computed in ProjectIllustrated.astro from the image's ratio). */
+.carousel-expand .carousel-rect.carousel-rect--image.active {
+  --carousel-base-scale: var(--active-scale, 1);
+  left: var(--active-left, 0%);
+  top: var(--active-top, 0%);
+}
 
 .carousel-expand .carousel-rect.active {
   --carousel-base-scale: 1;
@@ -1183,7 +1238,7 @@ body {
 
 /* Positioned near the top and width-capped, not vertically centered and
    full-width — matches the illustrated *projects'* title convention
-   (ProjectIllustrated.astro's `titleBox`, e.g. Reverielle's
+   (ProjectIllustrated.astro's `titleBox`, e.g. SnuffleStudy's
    `{top:2, width:38}`), which this row-based layout doesn't inherit
    automatically the way the button/carousel bboxes do. `align-self`
    overrides the row's own `align-items:center` for this one column only —
@@ -1277,19 +1332,27 @@ body {
    each photostrip.png is 3 stacked photos, each ~23-26% of the strip's
    total height, and the strip itself is ~0.42 wide-per-unit-tall. Given
    the window is `width`-driven with the strip filling 100% of it (no
-   horizontal cropping — the full width is always visible), the height
-   that shows "1.25 photos" works out to roughly 0.73x the window's own
-   width — see the `aspect-ratio` below. To retune the "how many photos
-   visible" feel, adjust that ratio; to retune the strip's own size on
-   the page, adjust `.photostrip-column`'s width instead. */
+   horizontal cropping — the full width is always visible).
+
+   SIZE IS SET HERE, NOT BY THE IMAGE FILE: the strip is always drawn
+   --photostrip-width wide (capped to a share of the viewport only on
+   narrow screens), whatever pixel size photostrip.png is, and the
+   window frame is always --photostrip-window-ratio shaped. Only the
+   strip's own height varies, following the supplied image's aspect
+   ratio (measured at build time in PhotoStrip.astro). To resize every
+   company's strip + frame at once, edit the two variables below. */
 .photostrip-column {
-  flex: 0 0 clamp(11rem, 20%, 18rem);
+  --photostrip-width: 26rem;
+  /* window frame shape, width / height — taller number on the right =
+     taller frame = more of the strip visible at once */
+  --photostrip-window-ratio: 100 / 85;
+  flex: 0 0 min(var(--photostrip-width), 32vw);
 }
 
 .photostrip-window {
   position: relative;
   width: 100%;
-  aspect-ratio: 100 / 73;
+  aspect-ratio: var(--photostrip-window-ratio);
   overflow: hidden;
   border-radius: var(--radius-card);
 }
@@ -1297,11 +1360,9 @@ body {
 /* `aspect-ratio` (not `height: auto` derived from the loaded image) so
    the box has a definite height immediately, before the image itself has
    loaded — otherwise it measures 0px tall and the scroll-pin's measure()
-   disables itself on a real (uncached) page load. This is ChloeFriendly's
-   exact photostrip.png ratio (1714x4096); Sewciety's is ~0.4202 vs this
-   ~0.4185 — close enough (~0.4%) that sharing one approximate value for
-   both is fine, and `.photostrip-window`'s `overflow:hidden` clips any
-   sub-pixel difference regardless. */
+   disables itself on a real (uncached) page load. The ratio itself is the
+   supplied image's own, set inline by PhotoStrip.astro (the value below
+   is only a fallback if the image can't be read at build time). */
 .photostrip-img {
   position: absolute;
   left: 0;

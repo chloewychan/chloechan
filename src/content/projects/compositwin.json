@@ -2,6 +2,7 @@
   "title": "Compositwin",
   "tagline": "Links Apple Music and Spotify between friends’ accounts through shared playlists and connected SpotifyJam / SharePlay",
   "order": 2,
+  "hidden": true,
   "layout": "illustrated",
   "label": "Work-In-Progress Project",
   "details": [
@@ -28,5 +29,7 @@
   "buttonsX": 54.49,
   "buttonsY": 41.25,
   "buttonsW": 12.82,
-  "buttonsH": 6.88
+  "buttonsH": 6.88,
+  "selfieX": 49.17,
+  "selfieY": 61.38
 }

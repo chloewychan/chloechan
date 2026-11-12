@@ -67,7 +67,7 @@ The Vercel CLI isn't installed globally on every machine; `npx vercel@latest <co
 - `src/pages/index.astro` — the single page; queries content collections and renders the matching section component per item
 - `src/content/{projects,companies,portfolio}/` — one JSON file per item; validated by the Zod schemas in `src/content.config.ts`. Add a JSON file to add an item, set `"hidden": true` to hide one from both the nav and the page
 - `src/components/` — section components (`ProjectIllustrated.astro`, `CompanySection.astro`, `PortfolioImageGrid.astro`, etc.) and shared pieces (`Hero.astro`, `Nav.astro`, `Footer.astro`)
-- `src/components/sections/illustrated/` — the fully hand-drawn Reverielle/Compositwin project scenes (`BlindBox.astro`, `ExpandingCarousel.astro`, `RotatingCarousel.astro`)
+- `src/components/sections/illustrated/` — the fully hand-drawn SnuffleStudy/Nymphase project scenes (`BlindBox.astro`, `ExpandingCarousel.astro`, `RotatingCarousel.astro`)
 - `src/layouts/BaseLayout.astro` — shared page shell, including the site-wide "wiggle sprite" motion engine (scroll inertia + cursor magnet) that drives every `.wiggle-sprite` element, from the hero's characters to the illustrated projects' art
 - `src/lib/` — build-time helpers (`wiggleSprite.ts` generates per-sprite motion "personality" from a seed string; `spriteBounds.ts` measures a PNG's opaque-pixel bounding box via `sharp`)
 - `src/styles/global.css` — all site styling (Tailwind is loaded via CDN in `BaseLayout.astro`, used for a handful of utility classes only)

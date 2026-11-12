@@ -22,7 +22,7 @@ const SPRITES_DIR = join(HERO_SOURCE_DIR, 'sprites');
 const OUT_DIR = join(ROOT, 'public', 'images', 'hero');
 const OUT_SPRITES_DIR = join(OUT_DIR, 'sprites');
 
-// Illustrated project sections (Reverielle, Compositwin, ...): every PNG in
+// Illustrated project sections (SnuffleStudy, Nymphase, ...): every PNG in
 // assets/<id>-source/ is a full 4096x1714 canvas layer — background, blind
 // box states, buttons, photo — meant to be stacked with inset:0 so they line
 // up without any per-layer positioning math. assets/general-source/ holds
@@ -82,6 +82,17 @@ async function buildTrimmedNativeSet(srcPath, outDir, baseName) {
 // at full canvas size — standalone graphics, not alignment-critical layers.
 const TRIMMED_BASENAMES = new Set(['button1', 'button2', 'arrow']);
 
+// Selfies are placed as standalone images (see selfieX/selfieY in the
+// project JSON), so a legacy full-canvas selfie is trimmed down to the
+// drawn art. A selfie that's already its own size is left exactly as-is
+// (trimming an opaque photo could shave off edge pixels).
+const CANVAS_WIDTH = 4096;
+async function buildSelfieSet(srcPath, outDir, baseName) {
+  const { width } = await sharp(srcPath).metadata();
+  const build = width >= CANVAS_WIDTH ? buildTrimmedNativeSet : buildNativeSet;
+  await build(srcPath, outDir, baseName);
+}
+
 async function main() {
   console.log('Optimizing hero background (responsive widths)...');
   const bgPath = join(HERO_SOURCE_DIR, 'background.PNG');
@@ -116,7 +127,7 @@ async function main() {
     const files = readdirSync(srcDir).filter((f) => /\.(png|jpe?g)$/i.test(f));
     for (const file of files) {
       const baseName = basename(file, extname(file));
-      const build = TRIMMED_BASENAMES.has(baseName) ? buildTrimmedNativeSet : buildNativeSet;
+      const build = baseName === 'selfie' ? buildSelfieSet : TRIMMED_BASENAMES.has(baseName) ? buildTrimmedNativeSet : buildNativeSet;
       await build(join(srcDir, file), outDir, baseName);
     }
   }

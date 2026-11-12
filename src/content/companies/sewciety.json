@@ -11,8 +11,8 @@
   "capsuleMirrored": true,
   "logoAlt": "UW Sewciety duck-with-needle mascot",
   "links": [
-    { "label": "Visit Website", "url": "#" },
-    { "label": "Github Repo", "url": "#" },
-    { "label": "Instagram", "url": "#" }
+    { "label": "Visit Website", "url": "https://www.sewciety.ca/" },
+    { "label": "Github Repo", "url": "https://github.com/Sewciety/Sewciety-Website-V1" },
+    { "label": "Instagram", "url": "http://instagram.com/uwsewciety" }
   ]
 }

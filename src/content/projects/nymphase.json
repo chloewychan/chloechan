@@ -1,0 +1,34 @@
+{
+  "title": "Nymphase",
+  "tagline": "Track your period, journal your emotions, and log your habits.",
+  "order": 2,
+  "layout": "illustrated",
+  "label": "Mobile App",
+  "details": [
+    "Built with Flutter and Dark",
+    "Uses Claude API"
+  ],
+  "websiteUrl": "https://github.com/chloewychan/nymphase",
+  "githubUrl": "https://github.com/chloewychan/nymphase",
+  "blindboxAlt": "Bunny",
+  "carouselPosition": "right",
+  "carouselVariant": "expand",
+  "carouselImageCount": 4,
+  "carouselImages": true,
+  "carouselCaption": [
+    "Loging Page",
+    "Log your period, see future periods",
+    "Journal your private emotions",
+    "Search through what you've journaled and logged"
+  ],
+  "blindboxX": 10.23,
+  "blindboxY": 33.20,
+  "blindboxW": 21.99,
+  "blindboxH": 58.46,
+  "buttonsX": 33.81,
+  "buttonsY": 41.19,
+  "buttonsW": 12.82,
+  "buttonsH": 6.88,
+  "selfieX": 32.76,
+  "selfieY": 60.68
+}

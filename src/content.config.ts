@@ -23,7 +23,7 @@ const projects = defineCollection({
     //                (old simple layout — Video Game, Emojify)
     // 'illustrated': fully custom hand-drawn scene: background art, a
     //                hover/click "blind box" reveal, link buttons, a photo,
-    //                and a placeholder-image carousel (Reverielle, Compositwin)
+    //                and a placeholder-image carousel (SnuffleStudy, Nymphase)
     layout: z.enum(['media-side', 'full-width', 'illustrated']),
     // Bullet points shown in the reveal-box / blind box — free-form, so
     // each project can list whatever facts actually matter for it
@@ -49,6 +49,9 @@ const projects = defineCollection({
     // 'rotate': arrows rotate the stack; the bottom slot stays enlarged
     carouselVariant: z.enum(['expand', 'rotate']).optional(),
     carouselImageCount: z.number().optional(),
+    // true: the carousel shows real images (carousel-1 … carousel-N from
+    // assets/<id>-source/, 1-indexed). false/omitted: empty placeholder boxes.
+    carouselImages: z.boolean().default(false),
     // One caption per placeholder image (index-aligned with
     // carouselImageCount) — the carousel shows only the caption for
     // whichever image is currently active/selected, not all of them at once.
@@ -70,6 +73,12 @@ const projects = defineCollection({
     buttonsY: z.number().optional(),
     buttonsW: z.number().optional(),
     buttonsH: z.number().optional(),
+    // The selfie's top-left corner, as a % of the canvas. Its WIDTH is the
+    // same for every project (SELFIE_WIDTH_PX in ProjectIllustrated.astro)
+    // and its height follows the supplied image's own aspect ratio, so the
+    // image in assets/<id>-source/selfie.png can be any shape/size.
+    selfieX: z.number().optional(),
+    selfieY: z.number().optional(),
   }),
 });
 

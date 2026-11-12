@@ -55,10 +55,13 @@ type Portfolio = CollectionEntry<'portfolio'>;
             buttonsY={project.data.buttonsY ?? 0}
             buttonsW={project.data.buttonsW ?? 0}
             buttonsH={project.data.buttonsH ?? 0}
+            selfieX={project.data.selfieX ?? 0}
+            selfieY={project.data.selfieY ?? 0}
             carouselPosition={project.data.carouselPosition ?? 'right'}
             carouselVariant={project.data.carouselVariant ?? 'expand'}
             carouselImageCount={project.data.carouselImageCount ?? 4}
             carouselCaption={project.data.carouselCaption ?? []}
+            carouselImages={project.data.carouselImages}
           />
         );
       }

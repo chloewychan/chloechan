@@ -1,5 +1,5 @@
 ---
-// Reverielle-style: every placeholder rectangle keeps its own fixed spot in
+// SnuffleStudy-style: every placeholder rectangle keeps its own fixed spot in
 // the row; the arrows just move which single one is "active" (enlarged),
 // wrapping around at both ends. Clicking an image selects it directly —
 // an alternative to the arrows, not a replacement.
@@ -8,10 +8,13 @@ import { wiggleVariant } from '../../../lib/wiggleSprite';
 interface Props {
   count: number;
   caption: string[]; // one caption per image, shown when that image is active
+  imageBase?: string; // e.g. "/images/projects/snufflestudy" -> carousel-1.png … carousel-N.png; omit for empty placeholder boxes
+  // per-image sizing measured from each image's own ratio (see ProjectIllustrated.astro)
+  imageLayout?: ({ width: number; activeScale: number; activeLeft: number; activeTop: number } | undefined)[];
   seed?: string; // gives each project's placeholder images their own wiggle personality
 }
 
-const { count, caption, seed = 'carousel' } = Astro.props;
+const { count, caption, seed = 'carousel', imageBase, imageLayout = [] } = Astro.props;
 const items = Array.from({ length: count }, (_, i) => i);
 // Each placeholder image is a wiggle sprite and grows on hover, like the
 // rest of the site's clickable art; the arrows that control them are not,
@@ -27,15 +30,25 @@ const variants = items.map((i) => wiggleVariant(`${seed}-carousel-${i}`));
   <div class="carousel-stage">
     {items.map((i) => {
       const v = variants[i];
-      const style = `--inertia-kick:${v.kick}; --inertia-friction:${v.friction}; --inertia-max:${v.max}; --bob-dur:${v.bobDur}s; --bob-delay:${v.bobDelay}s;`;
+      const L = imageLayout[i];
+      const widthStyle = L ? `width:${L.width}%; --active-scale:${L.activeScale}; --active-left:${L.activeLeft}%; --active-top:${L.activeTop}%;` : '';
+      const style = `${widthStyle}--inertia-kick:${v.kick}; --inertia-friction:${v.friction}; --inertia-max:${v.max}; --bob-dur:${v.bobDur}s; --bob-delay:${v.bobDelay}s;`;
       return (
         <button
           type="button"
-          class={`carousel-rect wiggle-sprite hover-expand ${v.bobClass}`}
+          class={`carousel-rect wiggle-sprite hover-expand ${v.bobClass}${imageBase ? ' carousel-rect--image' : ''}`}
           style={style}
           data-index={i}
           aria-label={`Show image ${i + 1}`}
-        />
+        >
+          {imageBase && (
+            <picture>
+              <source type="image/avif" srcset={`${imageBase}/carousel-${i + 1}.avif`} />
+              <source type="image/webp" srcset={`${imageBase}/carousel-${i + 1}.webp`} />
+              <img src={`${imageBase}/carousel-${i + 1}.png`} alt={caption[i] ?? ''} loading="lazy" decoding="async" onerror="this.closest('.carousel-rect')?.classList.add('carousel-rect--missing'); this.closest('picture')?.remove()" />
+            </picture>
+          )}
+        </button>
       );
     })}
   </div>

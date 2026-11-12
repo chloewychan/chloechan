@@ -2,6 +2,7 @@
   "title": "Reverielle",
   "tagline": "A mobile application that helps people coordinate their outfits, hair, and makeup to their events, weather, and personality",
   "order": 1,
+  "hidden": true,
   "layout": "illustrated",
   "label": "Work-In-Progress Project",
   "details": [
