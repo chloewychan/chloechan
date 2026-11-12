@@ -21,10 +21,10 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
-# Images — served output + raw source art are large binaries, kept out of git;
-# deploys upload the local filesystem directly (see scripts/optimize-images.mjs)
+# Images — the optimized output is generated, so it stays out of git. The raw
+# source art in assets/ IS committed: the build (`npm run build`) runs
+# scripts/optimize-images.mjs first to regenerate public/images/ from it.
 /public/images/
-/assets/hero-source/
 
 .vercel
 .env*
